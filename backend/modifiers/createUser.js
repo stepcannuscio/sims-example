@@ -25,3 +25,21 @@ User.register({username: user.username, firstName: user.firstName, lastName: use
         console.log(user)
     }
   });
+
+
+// router.post("/register", (req, res) => {
+//   console.log(req.body)
+//   User.findOne({username: req.body.userrname}, async (err, document) => {
+//       if (err) throw err;
+//       if (document) res.send("User already exists")
+//       if (!document) {
+//           const hashedPassword = await bcrypt.hash(req.body.password, 10)
+//           const newUser = new User({
+//               username: req.body.username,
+//               password: hashedPassword
+//           })
+//           await newUser.save()
+//           res.send("User created")
+//       }
+//   })
+// })

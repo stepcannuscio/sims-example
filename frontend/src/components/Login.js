@@ -1,14 +1,35 @@
 import React, {useState} from "react"
 import logo from "../images/logo.png"
 import axios from "axios"
-import { useHistory } from "react-router-dom";
+import { useHistory, Redirect } from "react-router-dom";
 
 
 export default function Login(props) {
+
+  
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
 
     const history = useHistory();
+
+    if (props.isLoggedIn) {
+
+        // console.log("checking log in !!!")
+        console.log(history.location)
+        
+        if (history.location.state) {
+            if (history.location.state.from) {
+                // Comes from login -> User logged in
+                return <Redirect to="/"/>
+            } 
+            // Logged out -> do nothing, show this page
+            
+        } else  {
+            // Typed in /login in url while logged in
+            return <Redirect to="/"/>
+        }
+        
+    }
 
     const contentStyle = {
         position: "fixed",
@@ -48,23 +69,30 @@ export default function Login(props) {
 
     }
     function sendAuthenticated() {
-        console.log("function sendAuthenticated")
+        console.log("Sending authentication!")
         props.parentCallback(true);
     }
 
 
     function handleSubmit(e) {
         e.preventDefault()
-        axios.post("http://localhost:5000/login", {
+        axios.post("http://localhost:5000/user/login", {
             username: username,
             password: password
-        })
+        }, {withCredentials: true}
+        )
         .then(res => {
             // console.log('def')
             // console.log(res)
-            if (res.data === "authenticated" ) {
-                console.log("Successful Login");
-                sendAuthenticated()
+            if (res.data) {
+                console.log(res.data)
+                if (res.data === "No User Exists") {
+                    alert("No user with these credentials exists")
+                } else if (res.data === "Successfully Authenticated") {
+                    sendAuthenticated()
+                }
+                // console.log("Successful Login");
+                // sendAuthenticated()
                 // console.log(props.history.push("/"))
                 history.push("/");
                 
