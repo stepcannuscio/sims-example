@@ -1,34 +1,21 @@
 
 /* Login page buttons */
+
+
 .btn {
+  /* width: 25%; */
+  padding: 8px 15px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #76C32D;
+  color: white;
   transition: all .2s ease-in-out;
 }
 
 .btn:hover {
   transform: scale(1.1);
 }
-
-/* Login page buttons */
-/* .sidenav {
-  grid-area: sidenav;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 240px;
-  position: fixed;
-  overflow-y: auto;
-  /* box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.08); */
-  /* Needs to sit above the hamburger menu icon */
-  /* z-index: 2; 
-  background-color: white;
-  transform: translateX(-245px);
-  transition: all 0.6s ease-in-out; */
-/* } * */
-
-/* The active class is toggled on hamburger and close icon clicks */
-/* .sidenav.active {
-  transform: translateX(0);
-} */
 
 .sidenav {
   grid-area: sidenav;
@@ -40,6 +27,7 @@
   overflow-y: auto;
   /* box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.08); */
   z-index: 2; /* Needs to sit above the hamburger menu icon */
+  border-right: 1px solid rgb(237, 241, 247);
   background-color: white;
   transform: translateX(-245px);
   transition: all 0.6s ease-in-out;
@@ -49,6 +37,76 @@
 .sidenav.active {
   transform: translateX(0);
 }
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr; /* Side nav is hidden on mobile */
+  grid-template-rows: 50px 1fr 50px;
+  grid-template-areas:
+    "header"
+    "main"
+    "footer";
+  height: 100vh;
+}
+
+a,
+a:active,
+a:visited,
+a:focus {
+  text-decoration: none;
+  color: rgb(34, 43, 69);
+}
+a:hover {
+  color: #3367ff;
+  cursor: pointer;
+}
+
+
+/* Only visible on mobile screens */
+.sidenav__close-icon {
+  position: absolute;
+  visibility: visible;
+  top: 8px;
+  right: 12px;
+  cursor: pointer;
+  font-size: 20px;
+  color: #ddd;
+}
+
+.menu-icon {
+  position: fixed;
+  display: flex;
+  top: 5px;
+  left: 10px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  z-index: 100;
+  cursor: pointer;
+  padding: 12px;
+  /* background-color: #dadae3; */
+}
+
+.sidebar-logo {
+  width: 40%;
+  
+}
+
+.loader {
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #76C32D; 
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+  margin: 15% auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 
 @media only screen and (min-width: 46.875em) {
   /* Show the sidenav */
@@ -61,11 +119,28 @@
   }
 
   .sidenav {
+    position: relative; /* Fixed position on mobile */
+    transform: translateX(0);
+  }
+
+  .sidenav__close-icon {
+    visibility: hidden;
+  }
+  .menu-icon {
+    visibility: hidden;
+  }
+  /* }
+
+  .sidenav {
     display: flex;
     flex-direction: column;
   }
 
+  
+
   .menu-icon {
     visibility: hidden;
-  }
+  } */
 }
+
+

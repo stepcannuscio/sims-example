@@ -11,25 +11,36 @@ export default function Login(props) {
     const [password, setPassword] = useState("")
 
     const history = useHistory();
+    console.log(history)
+    
 
     if (props.isLoggedIn) {
-
-        // console.log("checking log in !!!")
-        console.log(history.location)
-        
-        if (history.location.state) {
-            if (history.location.state.from) {
-                // Comes from login -> User logged in
-                return <Redirect to="/"/>
-            } 
-            // Logged out -> do nothing, show this page
-            
-        } else  {
-            // Typed in /login in url while logged in
-            return <Redirect to="/"/>
-        }
-        
+        return <Redirect to="/" />
     }
+
+    // if (props.isLoggedIn) {
+
+    //     console.log("checking log in !!!")
+    //     // console.log(history.location)
+        
+    //     if (history.location.state) {
+    //         if (history.location.state.from) {
+    //             // Comes from login -> User logged in
+    //             if (history.location.state.from.pathname === "/login") {
+    //                 return <Redirect to="/"/>
+    //             } else {
+    //                 return <Redirect to={history.location.state.from.pathname} />
+    //             }
+                
+    //         } 
+    //         // Logged out -> do nothing, show this page
+            
+    //     } else  {
+    //         // Typed in /login in url while logged in
+    //         return <Redirect to="/"/>
+    //     }
+        
+    // }
 
     const contentStyle = {
         position: "fixed",
@@ -59,15 +70,15 @@ export default function Login(props) {
         boxSizing: "border-box"
     }
 
-    const btnStyle = {
-        // width: "25%",
-        padding: "8px 15px",
-        marginTop: "10px",
-        borderRadius: "5px",
-        backgroundColor: "#76C32D",
-        color: "white"
+    // const btnStyle = {
+    //     // width: "25%",
+    //     padding: "8px 15px",
+    //     marginTop: "10px",
+    //     borderRadius: "5px",
+    //     backgroundColor: "#76C32D",
+    //     color: "white"
 
-    }
+    // }
     function sendAuthenticated() {
         console.log("Sending authentication!")
         props.parentCallback(true);
@@ -127,7 +138,7 @@ export default function Login(props) {
             <form style={formStyle} onSubmit={handleSubmit}>
                 <input style={inputStyle} type="text" placeholder="Username" value={username} onChange={handleChange} />
                 <input style={inputStyle} type="password" placeholder="Password" value={password} onChange={handleChange} />
-                <input className="btn" style={btnStyle} type="submit" value="Submit" />
+                <input className="btn" type="submit" value="Submit" />
             </form>
         
             
