@@ -17,7 +17,7 @@ export default function Layout({ children, user }) {
     }
 
     return (
-        <div style={{backgroundColor: "white", height: "100vh"}}>
+        <div>
              <div id="toggle-icon" onClick={menuClicked} className="sidenav__close-icon">
                 <img
                     id="toggle-img"

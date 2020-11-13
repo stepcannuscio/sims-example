@@ -87,7 +87,7 @@ export default function Main() {
           }
           </tbody>
         </table>
-        <button className="btn">View All</button>
+        <button className="btn-2">View All</button>
       </div>
       <div>
         <h2>Products Running Low</h2>
@@ -111,7 +111,7 @@ export default function Main() {
           }
           </tbody>
         </table>
-        <button className="btn">View All</button>
+        <button className="btn-2">View All</button>
       </div>
     </main>
   );

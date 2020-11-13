@@ -121,7 +121,7 @@ import Inventory from './components/Inventory';
     }
 
     return (
-      <div style={{backgroundColor: "#1E384D", height: "100vh"}}>
+      <div>
         <Switch>
           <Route path="/login">
             <Login isLoggedIn={loggedIn} parentCallback = {getUser}/>

@@ -1,19 +1,35 @@
 
 /* Login page buttons */
+.login-input::placeholder {
+  color: white;
+}
 
-
-.btn {
+.btn-1 {
   /* width: 25%; */
-  padding: 8px 15px;
-  margin-top: 10px;
+  padding: 10px 35px;
+  margin-top: 30px;
+  border: 2px solid #76C32D;
+  border-radius: 5px;
+  background-color: white;
+  color: #76C32D;
+  transition: all .2s ease-in-out;
+  font-size: 16px;
+}
+
+
+.btn-2 {
+  /* width: 25%; */
+  padding: 10px 35px;
+  margin-top: 30px;
   border: none;
   border-radius: 5px;
   background-color: #76C32D;
   color: white;
   transition: all .2s ease-in-out;
+  font-size: 16px;
 }
 
-.btn:hover {
+.btn-2:hover, .btn-1:hover {
   transform: scale(1.1);
 }
 
@@ -144,3 +160,76 @@ a:hover {
 }
 
 
+/* Inventory Table */
+.inventory-table {
+  
+  /* width: 80%; */
+  /* margin: 20px auto; */
+  /* max-height: 100vh; */
+}
+
+.inventory-table table {
+  border-spacing: 0;
+  /* border: 1px solid black; */
+  width: 100%;
+  text-align: left;
+
+}
+
+/* .inventory-table table tr {
+  border-spacing: 0;
+  border: 1px solid black;
+  width: 100%;
+
+} */
+
+.inventory-table table tr:last-child td {
+  border-bottom: 0;
+
+}
+
+.inventory-table table th,td {
+  margin: 0;
+  padding: 1rem;
+  border-bottom: 1px solid rgb(237, 241, 247);
+  /* border-right: 1px solid black; */
+  
+
+}
+.inventory-table table th,td:last-child {
+  border-right: 0;
+}
+
+input:focus {
+  outline: none;
+}
+
+
+.modal {
+  /* position: fixed; */
+  z-index: 100;
+  /* width: 100%;
+  height: 100%; */
+  /* background-color: rgba(0, 0, 0, 0.55); */
+}
+
+.modal_content {
+  background-color: white;
+  position: absolute;
+  top: 20%;
+  left: 30%;
+  width: 40%;
+  padding: 20px;
+  border-radius: 5px;
+  border: 2px solid black;
+}
+
+.close {
+  color: Black;
+  float: right;
+}
+
+.close:hover {
+  color: cyan;
+  cursor: pointer;
+}

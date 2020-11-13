@@ -46,7 +46,6 @@ export default function Header(props) {
   };
 
   function openAccountMenu() {
-    console.log(accountMenuDisplay);
     if (accountMenuDisplay === "none") {
       setAccountMenuDisplay("block");
     } else {

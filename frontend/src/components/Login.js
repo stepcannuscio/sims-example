@@ -11,8 +11,7 @@ export default function Login(props) {
     const [password, setPassword] = useState("")
 
     const history = useHistory();
-    console.log(history)
-    
+    console.log("checking log in")
 
     if (props.isLoggedIn) {
         return <Redirect to="/" />
@@ -50,22 +49,20 @@ export default function Login(props) {
         textAlign: "center"
     }
 
-    const imgStyle = {
-        width: "80%"
-    }
-
-    const formStyle = {
-        // padding: "1rem",
-        
+    const logoStyle = {
+        width: "50%",
+        margin: "30px 0"
     }
 
     const inputStyle = {
-        backgroundColor: "white",
-        color: "black",
+        backgroundColor: "#76C32D",
+        color: "white",
         display: "inline-block",
         margin: "10px auto",
-        padding: "10px 20px",
+        padding: "15px 20px",
         borderRadius: "5px",
+        fontSize: "16px",
+        border: 0,
         width: "100%",
         boxSizing: "border-box"
     }
@@ -134,11 +131,11 @@ export default function Login(props) {
 
     return (
         <div style={contentStyle}>
-            <img style={imgStyle} src={logo} alt="logo" />
-            <form style={formStyle} onSubmit={handleSubmit}>
-                <input style={inputStyle} type="text" placeholder="Username" value={username} onChange={handleChange} />
-                <input style={inputStyle} type="password" placeholder="Password" value={password} onChange={handleChange} />
-                <input className="btn" type="submit" value="Submit" />
+            <img style={logoStyle} src={logo} alt="logo" />
+            <form onSubmit={handleSubmit}>
+                <input style={inputStyle} className="login-input" type="text" placeholder="Username" value={username} onChange={handleChange} />
+                <input style={inputStyle} className="login-input" type="password" placeholder="Password" value={password} onChange={handleChange} />
+                <input className="btn-1" type="submit" value="Submit" />
             </form>
         
             
