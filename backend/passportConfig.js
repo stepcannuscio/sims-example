@@ -1,11 +1,12 @@
 const User = require("./models/user")
 const bcrypt = require("bcryptjs")
-// const { model } = require("./user")
 const localStrategy = require("passport-local").Strategy
 
 module.exports = function(passport) {
     passport.use(
         new localStrategy((username, password, done) => {
+
+            // <---> DB - EDIT BELOW
             User.findOne({username: username}, (err, user) => {
                 if (err => console.log(err))
                 if (!user) return done(null, false)
@@ -18,6 +19,7 @@ module.exports = function(passport) {
                     }
                 })
             })
+            // <---> DB - EDIT ABOVE
         })
     )
     // sets cookie
@@ -27,6 +29,9 @@ module.exports = function(passport) {
 
     // sets data you're storing for the logged in user
     passport.deserializeUser((id, cb) => {
+
+        // <---> DB - EDIT BELOW
+
         User.findOne({_id: id}, (err, user) => {
             const userInformation = {
                 firstName: user.firstName,
@@ -35,5 +40,7 @@ module.exports = function(passport) {
             }
             cb(err, userInformation)
         })
+
+        // <---> DB - EDIT ABOVE
     })
 }

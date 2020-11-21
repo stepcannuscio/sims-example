@@ -25,8 +25,6 @@ export default function Header(props) {
     backgroundColor: `white`,
   }
 
-
-
   const accountMenuStyle = {
     display: accountMenuDisplay,
     position: "absolute",
@@ -53,14 +51,10 @@ export default function Header(props) {
     }
   }
 
-  // const history = useHistory();
-
   function logout() {
     
     axios.get('http://localhost:5000/user/logout/', {withCredentials: true}).then(res => {
-      console.log(res.data)
       if (res.data === "Success") {        
-        // history.push("/login", {state: { prevPath: history.location.pathname }})
         console.log('successful logout')
       } else {
         alert("Failed to log out. Please try again.")

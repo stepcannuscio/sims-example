@@ -204,6 +204,10 @@ input:focus {
   outline: none;
 }
 
+#next-btn {
+  background-color: #1E384D!important;
+  color: #EFEFEF!important;
+}
 
 .modal {
   /* position: fixed; */
@@ -214,19 +218,22 @@ input:focus {
 }
 
 .modal_content {
-  background-color: white;
+  background-color: #1E384D;
   position: absolute;
-  top: 20%;
-  left: 30%;
-  width: 40%;
+  top: 10%;
+  left: 25%;
+  width: 60%;
   padding: 20px;
   border-radius: 5px;
   border: 2px solid black;
+  color: white;
+  text-align: center;
 }
 
 .close {
-  color: Black;
+  color: white;
   float: right;
+  font-size: 25px;
 }
 
 .close:hover {

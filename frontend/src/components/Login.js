@@ -1,45 +1,11 @@
 import React, {useState} from "react"
 import logo from "../images/logo.png"
 import axios from "axios"
-import { useHistory, Redirect } from "react-router-dom";
-
 
 export default function Login(props) {
-
   
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
-
-    const history = useHistory();
-    console.log("checking log in")
-
-    if (props.isLoggedIn) {
-        return <Redirect to="/" />
-    }
-
-    // if (props.isLoggedIn) {
-
-    //     console.log("checking log in !!!")
-    //     // console.log(history.location)
-        
-    //     if (history.location.state) {
-    //         if (history.location.state.from) {
-    //             // Comes from login -> User logged in
-    //             if (history.location.state.from.pathname === "/login") {
-    //                 return <Redirect to="/"/>
-    //             } else {
-    //                 return <Redirect to={history.location.state.from.pathname} />
-    //             }
-                
-    //         } 
-    //         // Logged out -> do nothing, show this page
-            
-    //     } else  {
-    //         // Typed in /login in url while logged in
-    //         return <Redirect to="/"/>
-    //     }
-        
-    // }
 
     const contentStyle = {
         position: "fixed",
@@ -67,20 +33,10 @@ export default function Login(props) {
         boxSizing: "border-box"
     }
 
-    // const btnStyle = {
-    //     // width: "25%",
-    //     padding: "8px 15px",
-    //     marginTop: "10px",
-    //     borderRadius: "5px",
-    //     backgroundColor: "#76C32D",
-    //     color: "white"
-
-    // }
     function sendAuthenticated() {
-        console.log("Sending authentication!")
+        // Send request to reauthenticate back to App
         props.parentCallback(true);
     }
-
 
     function handleSubmit(e) {
         e.preventDefault()
@@ -90,31 +46,20 @@ export default function Login(props) {
         }, {withCredentials: true}
         )
         .then(res => {
-            // console.log('def')
-            // console.log(res)
             if (res.data) {
-                console.log(res.data)
                 if (res.data === "No User Exists") {
                     alert("No user with these credentials exists")
                 } else if (res.data === "Successfully Authenticated") {
                     sendAuthenticated()
                 }
-                // console.log("Successful Login");
-                // sendAuthenticated()
-                // console.log(props.history.push("/"))
-                history.push("/");
-                
             }
         })
         .catch(err => {
-            console.log('ghi')
-            console.log(err)
             if (err.response) {
                 if (err.response.data) {
                     alert("Wrong credentials. Please try again.")
                 }
             }
-            
         })
     }
 
@@ -126,8 +71,6 @@ export default function Login(props) {
         }   
         console.log(e.target.type + ": " + e.target.value)
     }
-
-    
 
     return (
         <div style={contentStyle}>

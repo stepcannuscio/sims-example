@@ -1,75 +1,10 @@
 import './App.css';
-import {Switch, Route, Redirect} from 'react-router-dom'
+import {Switch, Route, Redirect, useHistory} from 'react-router-dom'
 import Login from './components/Login'
 import Home from './components/Home'
-import React, { Component, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from "axios"
 import Inventory from './components/Inventory';
-
-// class App extends Component {
-  
-//   constructor() {
-//     super()
-//     this.state = {
-//       loggedIn: false,
-//       user: null
-//     }
-
-//     this.getUser = this.getUser.bind(this)
-//     this.componentDidMount = this.componentWillMount.bind(this)
-    
-//   }
-
-//   componentWillMount() {
-//     this.getUser()
-//   }
-
-//   getUser() {
-//     return new Promise(function (resolve, reject) {
-//       axios.get('http://localhost:5000/user/', {withCredentials: true}).then(response => {
-//         console.log('Get user response: ')
-//         console.log(response.data)
-//         if (response.data.user) {
-//           console.log('Get User: There is a user saved in the server session: ')
-//           console.log(response.data.user)
-//           resolve(this.setState({
-//             loggedIn: true,
-//             user: response.data.user
-//           }))
-      
-//         } else {
-//           reject(console.log('Get user: no user'))
-//           this.setState({
-//             loggedIn: false,
-//             username: null
-//           })
-//         }
-//       }
-      
-//       )})}
- 
- 
-
-  // render() {
-
-    // const PrivateRoute = ({ component: Component, user, ...rest }) => {
-
-    //   const isLoggedIn = this.state.loggedIn
-    //   console.log(isLoggedIn)
-
-    //   return (
-    //     <Route
-    //       {...rest}
-    //       render={props =>
-    //         isLoggedIn ? (
-    //           <Component {...props} user={user}/>
-    //         ) : (
-    //           <Redirect to={{ pathname: '/login', state: { from: props.location } }} />
-    //         )
-    //       }
-    //     />
-    //   )
-    // }
 
   export default function App() {
 
@@ -77,21 +12,22 @@ import Inventory from './components/Inventory';
     const [loggedIn, setLoggedIn] = useState(false);
     const [user, setUser] = useState(null);
 
-
+    const history = useHistory();
     function getUser() {
+      setLoggedIn(true)
+      // Check with backend to see if there is a user signed in
       axios.get('http://localhost:5000/user/', {withCredentials: true}).then(response => {
         console.log('Get user response: ')
         console.log(response.data)
-        
         if (response.data.user) {
           console.log('Get User: There is a user saved in the server session: ')
           setUser(response.data.user)
           setLoggedIn(true)
+          history.push("/")
         } else {
           console.log('Get user: no user')
-          
           setUser(response.data.user)
-          setLoggedIn(false)
+          setLoggedIn(false) 
         }
         setLoading(false)
       });
@@ -106,6 +42,7 @@ import Inventory from './components/Inventory';
     }
 
     const PrivateRoute = ({ component: Component, user, ...rest }) => {
+      console.log(user)
       return (
         <Route
           {...rest}
