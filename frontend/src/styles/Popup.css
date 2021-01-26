@@ -1,0 +1,27 @@
+.top-content {
+    padding: 20px 0;
+    text-align: center;
+}
+
+.edit-btn {
+    color: white;
+    padding: 10px 55px;
+    border-radius: 5px;
+    border: none;
+    font-size: 18px;
+    outline: none;
+    margin: 10px;
+
+}
+
+.table-header {
+    padding-bottom: 10px;
+    text-align: left;
+}
+
+.table-cell {
+    padding-right: 20px;
+    border: none;
+    font-size: 16px;
+    text-align: left;
+}

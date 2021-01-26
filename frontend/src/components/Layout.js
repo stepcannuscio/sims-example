@@ -5,6 +5,13 @@ import MenuIcon from "../images/menu.png"
 
 export default function Layout({ children, user }) {
 
+    /* 
+    
+    Sets the layout to maintain the same header and sidenav
+    Also provides the ability to toggle the sidenav open and closed on mobile
+    
+    */
+
     const [sideNavClass, setSideNavClass] = useState("sidenav");
 
     function menuClicked(e) {

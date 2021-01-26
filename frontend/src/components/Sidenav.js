@@ -1,24 +1,33 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import logo from "../images/logo.png"
 
 export default function Sidenav(props) {
 
-    const listStyle = {
-        textAlign: "center",
-        padding: "0",
-        marginTop: "85px",
-        listStyleType: "none"
+  /*
+
+  Sets the sidenav with its corresponding links
+  
+  */
+
+  const listStyle = {
+      textAlign: "center",
+      padding: "0",
+      marginTop: "85px",
+      listStyleType: "none"
+  }
+
+  const listItemStyle = {
+      padding: "20px",
+      color: "#1E384D",
+      fontWeight: "400",
+      borderBottom: "1px solid rgb(30,56,77, .1)"
     }
 
-    const listItemStyle = {
-        padding: "20px",
-        color: "rgb(34, 43, 69)",
-        borderBottom: "1px solid rgb(237, 241, 247)"
-      }
+  const pages = ["Home", "Products", "Vendors", "Orders"]
+  const links = ["/", "/products", "/vendors", "/orders"]
 
-    const pages = ["Home", "Inventory"]
-    const links = ["/", "/inventory"]
+  const location = useLocation()
 
   return (
       
@@ -29,8 +38,13 @@ export default function Sidenav(props) {
       <ul style={listStyle}>
           {pages.map((page, index) => {
             return (
-             <li key={index} className="sidenav__list-item" style={listItemStyle}>
-             <Link to={links[index]}>{page}</Link>
+             <li key={index} style={listItemStyle}>
+             {links[index] === location.pathname 
+              ? 
+              <strong><Link to={links[index]}>{page}</Link></strong>
+              :
+              <Link to={links[index]}>{page}</Link>
+             }
            </li>
             )
           })}

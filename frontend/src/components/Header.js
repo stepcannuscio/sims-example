@@ -1,28 +1,22 @@
 import React from "react";
-import { Link, } from "react-router-dom";
+import OutsideAlerter from "./OutsideAlerter"
 import profileImg from "../images/user.png"
 import axios from "axios"
 
 export default function Header(props) {
+
+  /*
+ 
+   A header bar with the user's name listed as a clickable element which drops down
+   a menu that allows the user to log out
+
+  */
   
   const [accountMenuDisplay, setAccountMenuDisplay] = React.useState("none");
-
-  const headerStyle = {
-    gridArea: `header`,
-    backgroundColor: `white`,
-    display: `flex`,
-    alignItems: `center`,
-    justifyContent: `flex-end`,
-    padding: `0 40px`
-  };
 
   const iconStyle = {
     height: "15px",
     paddingRight: "5px"
-  };
-  
-  const profileStyle = {
-    backgroundColor: `white`,
   }
 
   const accountMenuStyle = {
@@ -34,13 +28,15 @@ export default function Header(props) {
     border: "1px rgb(228, 233, 242) solid",
     backgroundColor: "white",
     borderRadius: "0.17rem",
-    cursor: "pointer"
+    cursor: "pointer",
+    
   };
 
   const accountMenuItemStyle = {
     borderBottom: "1px solid rgb(228, 233, 242)",
     padding: "20px 40px",
-    fontSize: "12px"
+    fontSize: "12px",
+   
   };
 
   function openAccountMenu() {
@@ -55,29 +51,27 @@ export default function Header(props) {
     
     axios.get('http://localhost:5000/user/logout/', {withCredentials: true}).then(res => {
       if (res.data === "Success") {        
-        console.log('successful logout')
       } else {
         alert("Failed to log out. Please try again.")
       }
     })}
 
   return (
-    <header style={headerStyle}>
-      <div onClick={openAccountMenu}>
-      <a style={profileStyle} href="#">  <img
+    <header className="header">
+      
+      <div style={{cursor: "pointer", fontWeight: "400"}} onClick={openAccountMenu}>
+        <img
           style={iconStyle}
           src={profileImg}
           alt="profile" />
         {props.user.firstName + " " + props.user.lastName}
-        </a>
-      <div style={accountMenuStyle}>
-        <div style={accountMenuItemStyle}>
-          <Link to="/profile">Profile</Link>
-        </div>
-        <div style={accountMenuItemStyle}>
-          <a href="/login" onClick={logout}>Logout</a>
-        </div>
-      </div>
+        <OutsideAlerter hide={openAccountMenu} display={accountMenuDisplay}>
+          <div style={accountMenuStyle}>
+            <div style={accountMenuItemStyle}>
+              <a href="/login" onClick={logout}>Logout</a>
+            </div>
+          </div>
+      </OutsideAlerter>
       </div>
     </header>
   );
