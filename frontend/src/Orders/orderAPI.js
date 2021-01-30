@@ -37,7 +37,6 @@ async function updateOrder(orderData, id, data, discountsToUpdate) {
 }  
 
 async function updateOrderItem(data, id, itemsToDelete, itemsToAdd) {
-    console.log('updateOrderItem')
     return await axios.post("http://localhost:5000/orders/update-item",
         {data: data, id: id, deletes: itemsToDelete, inserts: itemsToAdd},
         {withCredentials: true})

@@ -74,7 +74,7 @@ export default function Order(props) {
         Header: 'Status',
         accessor: 'status',
         sortDescFirst: true,
-        disableSortBy: true
+        sortType: helpers.sortStatus
       },
 
       

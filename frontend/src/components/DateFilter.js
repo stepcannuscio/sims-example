@@ -47,7 +47,6 @@ export default function DateFilter(props) {
       ?
       <select style={filterStyle} value={variant} onChange={(e) => {
         const id = e.target.value === "default" ? null : e.target.value
-        console.log(e.target.value)
         setVariant(e.target.value)
         props.reload(dateFilter, startDate, endDate, id)
       }}>

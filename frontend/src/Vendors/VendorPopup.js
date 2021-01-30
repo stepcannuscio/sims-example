@@ -61,7 +61,8 @@ export default function VendorPopup(props) {
           {
             Header: 'Stock Level',
             accessor: 'stockLevel',
-            disableSortBy: true
+            sortType: helpers.sortStockLevel,
+            sortDescFirst: true
           },
           {
             Header: 'Recent Order',
@@ -421,7 +422,7 @@ export default function VendorPopup(props) {
                                         <td className="table-cell stock-level" style={{backgroundColor: bgColor}}>{variant.stockLevel}</td>
                                         <td>{helpers.formatter.format(variant.cost)}</td>
                                         <td>{variant.recentOrder}</td>
-                                        <td ><input type="text" placeholder="0" style={{fontSize: "16px"}}placeholder={variant.orderQuantity || 0} onChange={(e) => {
+                                        <td ><input type="text" style={{fontSize: "16px"}}placeholder={variant.orderQuantity || 0} onChange={(e) => {
                                             variant.orderQuantity = e.target.value
                                             addOrderItem(variant, e.target.value) 
                                         }}/></td>

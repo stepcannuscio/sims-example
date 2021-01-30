@@ -21,6 +21,21 @@ function sortStockLevel(rowA, rowB) {
     }
 }
 
+function sortStatus(rowA, rowB) {
+  const a = rowA.values.status
+  const b = rowB.values.status
+
+  if (a === "completed" && ["submitted", "fulfilled", "completed"].includes(b)) {
+      return 1
+  } else if (a === "fulfilled" && ["submitted", "fulfilled"].includes(b)) {
+      return 1
+  } else if (a === "submitted" && b === "submitted") {
+      return 1
+  } else {
+      return -1
+  }
+}
+
 function sortMoney(rowA, rowB, column) {
 
     var aValues = "$0"
@@ -100,4 +115,4 @@ function capitalizeFirstLetter(string) {
 }
 
 
-export {formatter, sortStockLevel, sortMoney, sortDates, capitalizeFirstLetter}
+export {formatter, sortStockLevel, sortMoney, sortDates, capitalizeFirstLetter, sortStatus}
