@@ -2,6 +2,7 @@ import React, {useState, useEffect} from "react"
 import { useTable, useAsyncDebounce, useGlobalFilter, usePagination, useSortBy, useRowSelect } from "react-table"
 import Popup from "./Popup"
 import searchIcon from "../images/search.png"
+import * as helpers from "../helpers"
 
 function GlobalFilter({
     globalFilter,
@@ -65,7 +66,7 @@ export default function Table({columns, initialSearch, data, type, reloadData, s
       )
     }
   )
-    
+
   const {
       getTableProps,
       getTableBodyProps,
@@ -92,7 +93,7 @@ export default function Table({columns, initialSearch, data, type, reloadData, s
               pageIndex: 0, 
               pageSize: perPage,
               hiddenColumns: ["id", "comm_method", "email", "phone", "website", "Vendor_ID", "contact_name",
-                              "subtotal", "discount", "variant_id", "vendor_id", "shopify_id"],
+                              "subtotal", "discount", "variant_id", "vendor_id", "shopify_id", "order_minimum", "deals"],
               globalFilter: initialSearch
             }
         },
@@ -155,12 +156,6 @@ export default function Table({columns, initialSearch, data, type, reloadData, s
           reloadData()
        }   
      }
-
-
-    function capitalizeFirstLetter(string) {
-      return string.charAt(0).toUpperCase() + string.slice(1);
-  }
-
 
       const results = page.length > 10 ? 10 : page.length
 
@@ -253,7 +248,7 @@ export default function Table({columns, initialSearch, data, type, reloadData, s
                       return (
                       <td {...cell.getCellProps()} onClick={() => popupEnabled ? togglePopup(cell) : null} onChange={() => type === "order" ? update(cell.row) : null}> {/*  */}
                         <div style={stockStyle}>
-                        {(cell.column.id === "completed_date" || cell.column.id === "fulfilled_date" || cell.column.id === "submitted_date") && cell.value === '01/01/1969 04:20AM' ? cell.value="" : cell.column.id === "vendor" && cell.value ? capitalizeFirstLetter(cell.value) : cell.render('Cell')}
+                        {(cell.column.id === "completed_date" || cell.column.id === "fulfilled_date" || cell.column.id === "submitted_date") && cell.value === '01/01/1969 04:20AM' ? cell.value="" : ["vendor", "name"].includes(cell.column.id) && cell.value ? helpers.capitalizeFirstLetter(cell.value) : cell.render('Cell')}
                         </div>
                       </td>
                       )

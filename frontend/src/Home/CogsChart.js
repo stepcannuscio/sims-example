@@ -8,10 +8,10 @@ export default function CogsChart(props) {
         
         // Custom popup when hovering over data points in the chart
 
-        if (active) {
+        if (active && payload) {
             return (
             <div className="custom-tooltip">
-                <strong><p className="label">{payload[0] ? payload[0].payload.date : null}</p></strong>
+                <strong><p className="label">{payload && payload[0] ? payload[0].payload.date : null}</p></strong>
                 <p className="label" style={{color: "#8884d8" }}>{payload.length === 3  ? `Revenue: ${Math.round(payload[0].value / (payload[1].value + payload[2].value + payload[0].value)*100)}%` : null}</p>
                 <p className="label" style={{color: "#82ca9d" }}>{payload.length === 3 ? `Discount: ${Math.round(payload[1].value / (payload[1].value + payload[2].value + payload[0].value)*100)}%` : null}</p>
                 <p className="label" style={{color: "orange" }}>{payload.length === 3 ? `COGS: ${Math.round(payload[2].value / (payload[1].value + payload[2].value + payload[0].value)*100)}%` : null}</p>

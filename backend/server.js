@@ -13,7 +13,6 @@ const purchaseRoutes = require('./routes/purchases')
 const saleRoutes = require('./routes/sales')
 const orderRoutes = require('./routes/orders')
 const vendorRoutes = require('./routes/vendors')
-// const updateRoutes = require('./routes/updates')
 
 // Config files 
 const db = require("./db/dbConfig") // access to DB
@@ -49,26 +48,12 @@ app.use('/purchases', purchaseRoutes)
 app.use('/sales', saleRoutes)
 app.use('/orders', orderRoutes)
 app.use('/vendors', vendorRoutes)
-// app.use('/updates', updateRoutes)
 
+// Task Scheduler
 cron.schedule('0 9-19 * * *', () => {
-  console.log('running a task every hour') // runs it at the start of every hour b/t 9am and 7pm (max business hours)
-  getLastUpdate()
+    // runs it at the start of every hour b/t 9am and 7pm (max business hours)
+    getLastUpdate()
 });
-
-// getLastUpdate()
-
-
-// Sunday	11AM–3PM
-// Monday	9AM–7PM
-// Tuesday	9AM–7PM
-// Wednesday	9AM–7PM
-// Thursday	9AM–7PM
-// Friday	9AM–7PM
-// Saturday	9AM–6PM
-
-
-// getLastUpdate()
 
 app.listen(port, () => {
     console.log(`Server is running on port: ${port}`)

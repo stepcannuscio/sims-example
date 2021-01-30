@@ -27,8 +27,14 @@ router.get('/:id', async (req, res) => {
   ;
   ` 
   if (req.user) {
-    const result = await db.query(query, [req.params.id])
-    res.send(result.rows)
+    try {
+      const result = await db.query(query, [req.params.id])
+      res.send(result.rows)
+    } catch {
+      console.log("Error: GET /orders/:id")
+      res.send("Error")
+    }
+    
   } else {
     res.send("Not Authenticated")
   }
@@ -37,17 +43,23 @@ router.get('/:id', async (req, res) => {
 
 router.get('/products/:id', async (req, res) => {
 
+  // Loads variant data for the product passed in as a parameter
 
+  const query = `
+    SELECT v.id, v.title, v.cost
+    FROM products p join variants v on p.id=v.product
+    WHERE p.id=$1
+    ORDER BY v.title asc;
+  `
   if (req.user) {
-    const query = `
-      SELECT v.id, v.title, v.cost
-      FROM products p join variants v on p.id=v.product
-      WHERE p.id=$1
-      ORDER BY v.title asc;
-    `
 
-  const result = await db.query(query, [req.params.id])
-  res.send(result.rows)
+    try {
+      const result = await db.query(query, [req.params.id])
+      res.send(result.rows)
+    } catch {
+      console.log("Error: GET /orders/products/:id")
+      res.send("Error")
+    }
 
   } else {
     res.send("Not Authenticated")
@@ -70,8 +82,15 @@ router.get("/", async (req, res) => {
     ;
   `
   if (req.user) {
-    const result = await db.query(query)
-    res.send(result.rows)
+
+    try {
+      const result = await db.query(query)
+      res.send(result.rows)
+    } catch {
+      console.log("Error: GET /orders/")
+      res.send("Error")
+    }
+    
   } else {
     res.send("Not Authenticated")
   }
@@ -80,106 +99,47 @@ router.get("/", async (req, res) => {
 
 router.post("/update-item", async (req, res) => {
 
+  // Updates an order item
+
   if (req.user) {
 
-    const updates = req.body.data ? req.body.data : null
-    const orderId = req.body.id
-    const deletes = req.body.deletes
-    const inserts = req.body.inserts
+    try {
 
-    const values = []
+      const updates = req.body.data ? req.body.data : null
+      const orderId = req.body.id
+      const deletes = req.body.deletes
+      const inserts = req.body.inserts
 
-    // console.log(updates)
+      const values = []
+      updates.forEach(item => values.push([item.order_item_id, item.cost, item.quantity, item.cost * item.quantity, item.discount, (item.cost * item.quantity) - item.discount]))
 
-    updates.forEach(item => values.push([item.order_item_id, item.cost, item.quantity, item.cost * item.quantity, item.discount, (item.cost * item.quantity) - item.discount]))
-
-    // console.log(values)
-
-    if (values.length > 0) {
-      const query = format("UPDATE order_items oi set cost=cast(new.cost as float), quantity=greatest(cast(new.quantity as float)), subtotal=cast(new.subtotal as float), discount=cast(new.discount as float), total=cast(new.total as float) from (values %L) as new (id, cost, quantity, subtotal, discount, total) where oi.id=cast(new.id as int)", values)
-
-      // console.log(query)
-  
-      const result = await db.query(query)
-    }
-    // Updates the discount and total for the items in the order
-
-   
-   
-
-    if (deletes.length > 0) {
-      // There are items to delete
-
-      const deleteQuery = format("DELETE FROM order_items where id in (%L)", deletes)
-      // console.log(deleteQuery)
-      const deleteResult = await db.query(deleteQuery)
-    }
-
-    if (inserts.length > 0) {
-      // There are items to delete
-      // const addQuery = `
-      //   INSERT INTO order_items (order_id, variant, quantity, subtotal, discount, total, cost)
-      //   values ($1, $2, $3, $4, $5, $6, $7)
-      // ; 
+      if (values.length > 0) {
+        // Updates the order items based on the data passed in
+        const query = format("UPDATE order_items oi set cost=cast(new.cost as float), quantity=greatest(cast(new.quantity as float)), subtotal=cast(new.subtotal as float), discount=cast(new.discount as float), total=cast(new.total as float) from (values %L) as new (id, cost, quantity, subtotal, discount, total) where oi.id=cast(new.id as int)", values)
+        const result = await db.query(query)
       
-      // `
+      }
 
+      if (deletes.length > 0) {
+        // Delete these items from the order
+        const deleteQuery = format("DELETE FROM order_items where id in (%L)", deletes)
+        const deleteResult = await db.query(deleteQuery)     
+      }
 
-      const addValues = []
+      if (inserts.length > 0) {
+        // Insert these items into the order
+        const addValues = []
+        inserts.forEach(item => {
+          addValues.push([orderId, item.variant_id, item.quantity, item.cost * item.quantity, item.discount, (item.cost * item.quantity) - item.discount, item.cost])
+        })
+        const addQuery = format('INSERT INTO order_items (order_id, variant, quantity, subtotal, discount, total, cost) VALUES %L', addValues); 
+      }
 
-      inserts.forEach(item => {
-        addValues.push([orderId, item.variant_id, item.quantity, item.cost * item.quantity, item.discount, (item.cost * item.quantity) - item.discount, item.cost])
-      })
-
-      // Creates the order items in the DB
-      const addQuery = format('INSERT INTO order_items (order_id, variant, quantity, subtotal, discount, total, cost) VALUES %L', addValues); 
-
-      // console.log(addQuery)
-
-      const addResult = await db.query(addQuery)
+      res.send("Success")
+    } catch {
+      console.log("Error: POST /orders/update-item")
+      res.send("Error")
     }
-
-
-
-    // if (updates[0].status === "completed") {
-    //   // update the discount and total of the order items if they are not 0 or null
-
-    //   // const orderDiscount = result.rows[0].discount ? result.rows[0].discount : 0
-    //   // const orderSubtotal = result.rows[0].subtotal
-    //   // const orderTotal = result.rows[0].total
-
-    //   // const newValues = []
-
-    //   // updates.forEach(item => {
-    //   //   const weight = item.subtotal / orderSubtotal
-    //   //   const weightedDiscount = orderDiscount * weight
-    //   //   newValues.push([item.order_item_id, Math.round(weightedDiscount * 100, 2) / 100, Math.round((item.subtotal - weightedDiscount) * 100, 2) / 100])
-    //   // })
-
-    //   // // Updates the discount and total for the items in the order
-    //   // const newQuery = format("UPDATE order_items oi set discount=cast(new.discount as float), total=cast(new.total as float) from (values %L) as new (id, discount, total) where oi.id=cast(new.id as int)", newValues)
-
-    //   // const newResult = await db.query(newQuery)
-
-    //   const newValues = []
-
-    //   updates.forEach(item => {
-    //     newValues.push([item.variant_id, item.quantity])
-    //   })
-
-    //   // Updates the quantity and cost of the variants in the order
-    //   const newQuery = format("UPDATE variants v set quantity=v.quantity+cast(new.quantity as float) from (values %L) as new (variant_id, quantity) where v.id=cast(new.variant_id as int)", newValues)
-
-    //   const newRows = await db.query(newQuery)
-
-
-
-
-    // }
-
-
-    res.send("Success")
-
 
   } else {
     res.send("Not Authenticated")
@@ -189,100 +149,39 @@ router.post("/update-item", async (req, res) => {
 
 router.post("/update", async (req, res) => {
 
-  // Updates an order and optionally the relevant order_item and variant data in the order
+  // Updates an order
 
   if (req.user) {
 
-    // const discount = req.body.discount ? Math.round(req.body.discount * 100, 2) / 100 : 0 
-    // var query = ""
-    // var values = []
-    const updates = req.body.data ? req.body.data : null
-    // const subtotal = updates ? updates[0].order_subtotal : 0
-  
-    
+    try {
 
+    const updates = req.body.data ? req.body.data : null
     const order = req.body.orderData
     const orderId = req.body.id
-    // const total = order.total === 0 || !order.total ? order.subtotal - order.discount : order.total
-
-    // console.log(order)
-
-    const query = format(`
-    UPDATE orders
-    SET status=$2, %I=NOW(), tracking=$3, discount=$4, subtotal=$5, total=$6
-    WHERE id=$1
-    RETURNING discount, subtotal, total
-    ;
-  `, `${order.status}_date`);
 
     const values = [orderId, order.status, order.tracking, order.discount, order.subtotal, order.subtotal - order.discount]
-
-    // var query = format('UPDATE orders SET status=%L, %I=now(), tracking=$2, discount=$3, total=$4, status='fulfilled',
-    
-    // FROM %I WHERE my_col = %L %s', 'my_table', 34, 'LIMIT 10');
-
-    
-    // if (req.body.status === "completed") {
-    //   // Sets the order as completed
-    //   query = `
-    //     UPDATE orders
-    //     SET status='completed', completed_date=NOW()
-    //     WHERE id=$1
-    //     RETURNING discount, subtotal, total
-    //     ;
-    //   `;
-    //   values = [req.body.id]
-
-      
-
-    // } else if (req.body.status === "fulfilled") {
-
-    //   if (req.body.tracking) {
-    //     // There is tracking provided - update the tracking, discount, total, and status of the order
-    //     query = `
-    //       UPDATE orders
-    //       SET tracking=$2, discount=$3, total=$4, status='fulfilled', fulfilled_date=NOW()
-    //       WHERE id=$1
-    //       ;
-    //     `;
-    //     values = [req.body.id, req.body.tracking, discount, subtotal - discount]
-    //   } else {
-    //     // There is no tracking provided - update the discount, total, and status of the order
-    //     query = `
-    //       UPDATE orders
-    //       SET discount=$2, total=$3,status='fulfilled', fulfilled_date=NOW()
-    //       WHERE id=$1
-    //       ;
-    //     `;
-    //     values = [req.body.id, discount, subtotal - discount]
-    //   }
-
-    // } else {
-    //   // Submitted
-    //   query = `
-    //     UPDATE orders
-    //     SET discount=null, total=null, tracking=null, status='submitted'
-    //     WHERE id=$1
-    //     ;
-    //   `;
-    //   values = [req.body.id]
-
-    // }
-
-    // console.log(values)
-    // console.log(query)
+  
+    // Updates the status and order data
+    const query = format(`
+      UPDATE orders
+      SET status=$2, %I=NOW(), tracking=$3, discount=$4, subtotal=$5, total=$6
+      WHERE id=$1
+      RETURNING discount, subtotal, total
+      ;
+    `, `${order.status}_date`);
 
     const result = await db.query(query, values)
+  
+
 
     if (order.status === "completed") {
-      // update the discount and total of the order items if they are not 0 or null
+      // Updates the order items data if the data is 0 or null (meaning the user hasn't updated this data)
 
       const orderDiscount = result.rows[0].discount ? result.rows[0].discount : 0
       const orderSubtotal = result.rows[0].subtotal
       const orderTotal = result.rows[0].total
 
       const newValues = []
-
       updates.forEach(item => {
         const weight = item.subtotal / orderSubtotal
         const weightedDiscount = orderDiscount * weight
@@ -291,81 +190,31 @@ router.post("/update", async (req, res) => {
         newValues.push([item.order_item_id, discount, total])
       })
 
-      // console.log(updates)
-      // console.log(newValues)
-
       // Updates the discount and total for the items in the order
       const newQuery = format("UPDATE order_items oi set discount=cast(new.discount as float), total=cast(new.total as float) from (values %L) as new (id, discount, total) where oi.id=cast(new.id as int)", newValues)
-
       const newResult = await db.query(newQuery)
 
       const newestValues = []
-
-
       updates.forEach(item => {
         newestValues.push([item.variant_id, item.quantity])
       })
 
-      // Updates the quantity and cost of the variants in the order
+      // Updates the quantity of the variants in the order
       const newestQuery = format("UPDATE variants v set quantity=greatest(v.quantity+cast(new.quantity as float), 0) from (values %L) as new (variant_id, quantity) where v.id=cast(new.variant_id as int)", newestValues)
-
-
-      // updates.forEach(item => {
-      //   newestValues.push([item.variant_id, item.quantity, Math.round((orderTotal / item.quantity) * 100, 2) / 100])
-      // })
-
-      // // Updates the quantity and cost of the variants in the order
-      // const newestQuery = format("UPDATE variants v set quantity=v.quantity+cast(new.quantity as float), cost=cast(new.cost as float) from (values %L) as new (variant_id, quantity, cost) where v.id=cast(new.variant_id as int)", newestValues)
-
       const newestRows = await db.query(newestQuery)
+    }
 
-
-
+    // All data updated successfully
+    res.send("Success")
 
     }
 
-    res.send("Success")
+    catch {
+      console.log("Error: POST /orders/update")
+      res.send("Error")
+    }
 
-    // if (req.body.status === "completed") {
-      
-    //   // If the order is completed then we also have to update the
-    //   // relevant order_item and variant data for the items in the order
-
-    //   const orderDiscount = result.rows[0].discount ? result.rows[0].discount : 0
-    //   const orderSubtotal = result.rows[0].subtotal
-    //   const orderTotal = result.rows[0].total
-
-    //   const newValues = []
-
-    //   updates.forEach(item => {
-    //     const weight = item.subtotal / orderSubtotal
-    //     const weightedDiscount = orderDiscount * weight
-    //     newValues.push([item.order_item_id, Math.round(weightedDiscount * 100, 2) / 100, Math.round((item.subtotal - weightedDiscount) * 100, 2) / 100])
-    //   })
-
-    //   // Updates the discount and total for the items in the order
-    //   const newQuery = format("UPDATE order_items oi set discount=cast(new.discount as float), total=cast(new.total as float) from (values %L) as new (id, discount, total) where oi.id=cast(new.id as int)", newValues)
-
-    //   const newResult = await db.query(newQuery)
-
-    //   const newestValues = []
-
-    //   updates.forEach(item => {
-    //     newestValues.push([item.variant_id, item.quantity, Math.round((orderTotal / item.quantity) * 100, 2) / 100])
-    //   })
-
-    //   // Updates the quantity and cost of the variants in the order
-    //   const newestQuery = format("UPDATE variants v set quantity=v.quantity+cast(new.quantity as float), cost=cast(new.cost as float) from (values %L) as new (variant_id, quantity, cost) where v.id=cast(new.variant_id as int)", newestValues)
-
-    //   const newestRows = await db.query(newestQuery)
-
-    //   // All order, order_item, and variant data has been updated
-    //   res.send("Success")
-      
-    // } else {
-    //   // Order is fulfilled and order data has been updated
-    //   res.send("Success")
-    // }
+  
 } else {
   res.send("Not Authenticated")
 }
@@ -378,35 +227,39 @@ router.post("/", async (req, res) => {
 
   if (req.user) {
 
-    const order = req.body.order
-    const orderItems = req.body.orderItems
-    const user = req.body.user
+    try {
+      const order = req.body.order
+      const orderItems = req.body.orderItems
+      const user = req.body.user
+      
+      const query = `
+          INSERT INTO orders (vendor, subtotal, status, user_id)
+          values ($1, $2, $3, $4)
+          RETURNING id
+      `;
+
+      const values = [order.vendor, Math.round(order.subtotal * 100, 2) / 100, order.status, user]
+
+      // Creates the new order in the DB
+      const result = await db.query(query, values)
     
-    const query = `
-        INSERT INTO orders (vendor, subtotal, status, user_id)
-        values ($1, $2, $3, $4)
-        RETURNING id
-    `;
+      const newValues = []
+      orderItems.forEach(item => {
+        newValues.push([result.rows[0].id, item.variant, Math.round(item.subtotal * 100, 2) / 100, item.quantity])
+      })
 
-    const values = [order.vendor, Math.round(order.subtotal * 100, 2) / 100, order.status, user]
-
-    // Creates the new order in the DB
-    const result = await db.query(query, values)
-
-    const newValues = []
-
-    orderItems.forEach(item => {
-      newValues.push([result.rows[0].id, item.variant, Math.round(item.subtotal * 100, 2) / 100, item.quantity])
-    })
-
-    // console.log(newValues)
-
-    // Creates the order items in the DB
-    const newQuery = format('INSERT INTO order_items (order_id, variant, subtotal, quantity) VALUES %L', newValues); 
-    const newResult = await db.query(newQuery)
-
-    // All data has been create for order and order_items
-    res.send("Success")
+    
+      // Creates the order items in the DB
+      const newQuery = format('INSERT INTO order_items (order_id, variant, subtotal, quantity) VALUES %L', newValues); 
+      const newResult = await db.query(newQuery)
+    
+      // All data has been created for the order and order_items
+      res.send("Success")
+      
+    } catch {
+      console.log("Error: POST /orders/ ")
+      res.send("Error")
+    }
 
   } else {
     res.send("Not Authenticated")
@@ -447,7 +300,10 @@ router.post("/text", async (req, res) => {
           to: `+1${req.body.to}`
       })
       .then(message => res.send("Success"))
-      .catch(error => res.send("Error"))
+      .catch(error => {
+        console.log("Error sending text /orders/text")
+        res.send("Error")
+      })
   } else {
     res.send("Not Authenticated")
   }
@@ -503,7 +359,10 @@ router.post("/email", async (req, res) => {
       text: message, // plain text body
     })
     .then(() => res.send("Success"))
-    .catch(error => res.send("Error"))
+    .catch(error => {
+      console.log("Error sending email /orders/email")
+      res.send("Error")
+    })
 
     } else {
       res.send("Not Authenticated")

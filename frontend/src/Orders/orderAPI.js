@@ -28,14 +28,6 @@ async function loadVariants(id) {
           .catch(err => console.log(err))   
 } 
 
-// async function updateOrder(tracking, discount, status, id, data) {
-//     return await axios.post("http://localhost:5000/orders/update",
-//         {tracking: tracking, discount: discount, status: status, id: id, data: data},
-//         {withCredentials: true})
-//             .then(res => res.data)
-//             .catch(err => console.log(err))   
-// }  
-
 async function updateOrder(orderData, id, data, discountsToUpdate) {
     return await axios.post("http://localhost:5000/orders/update",
         {orderData: orderData, id: id, data: data, noDiscounts: discountsToUpdate},

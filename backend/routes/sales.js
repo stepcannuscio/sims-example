@@ -12,8 +12,14 @@ router.get('/', async (req, res) => {
     ; 
   ` 
   if (req.user) {
-    const result = await db.query(query)
-    res.send(result.rows)
+    try {
+      const result = await db.query(query)
+      res.send(result.rows)
+    } catch {
+      console.log("Error: GET /sales/")
+      res.send("Error")
+    }
+    
   } else {
     res.send("Not Authenticated")
   }
@@ -32,8 +38,15 @@ router.post("/", async (req, res) => {
   `;
 
   if (req.user) {
-    const result = await db.query(query, [sale.start_date, sale.end_date, sale.all_day, sale.title, sale.description, sale.vendor, sale.user_id])
-    res.send("Success")
+
+    try {
+      const result = await db.query(query, [sale.start_date, sale.end_date, sale.all_day, sale.title, sale.description, sale.vendor, sale.user_id])
+      res.send("Success")
+    } catch {
+      console.log("Error: POST /sales/")
+      res.send("Error")
+    }
+    
   } else {
     res.send("Not Authenticated")
   }

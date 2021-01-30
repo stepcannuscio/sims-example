@@ -10,7 +10,6 @@ router.get('/:filter/:startDate/:endDate', async (req, res, next) => {
     between specifc dates and filtered by day, week, month, year
 
     */
-    
  
     // Sets the query data based on the date filter's provided
     var dateLength = 7 // default for month
@@ -30,25 +29,25 @@ router.get('/:filter/:startDate/:endDate', async (req, res, next) => {
     // Gets purchases split by source - shopify or woo
     const query = `
 
-    SELECT distinct woo.purchases as "woo", shopify.purchases as "shopify", substring(cast(date_trunc($1, pur.date) as varchar), 1, $2) as "date"
-    FROM purchases pur
-    join
+        SELECT distinct woo.purchases as "woo", shopify.purchases as "shopify", substring(cast(date_trunc($1, pur.date) as varchar), 1, $2) as "date"
+        FROM purchases pur
+        join
 
-    (SELECT round(cast(sum(total) as numeric), 2) as "purchases", substring(cast(date_trunc($1, date) as varchar), 1, $2) as "date"
-    from purchases where source ='Woo' and date_trunc('day', date) >= $3 
-    and date_trunc('day', date) <= $4
-    group by substring(cast(date_trunc($1, date) as varchar), 1, $2)) as 
-    woo on substring(cast(date_trunc($1, pur.date) as varchar), 1, $2)=woo.date
-    join
+        (SELECT round(cast(sum(total) as numeric), 2) as "purchases", substring(cast(date_trunc($1, date) as varchar), 1, $2) as "date"
+        from purchases where source ='Woo' and date_trunc('day', date) >= $3 
+        and date_trunc('day', date) <= $4
+        group by substring(cast(date_trunc($1, date) as varchar), 1, $2)) as 
+        woo on substring(cast(date_trunc($1, pur.date) as varchar), 1, $2)=woo.date
+        join
 
-    (SELECT round(cast(sum(total) as numeric), 2) as "purchases", substring(cast(date_trunc($1, date) as varchar), 1, $2) as "date"
-    from purchases where source ='Shopify' and date_trunc('day', date) >= $3
-    and date_trunc('day', date) <= $4
-    group by substring(cast(date_trunc($1, date) as varchar), 1, $2)) as 
-    shopify on substring(cast(date_trunc($1, pur.date) as varchar), 1, $2)=shopify.date
+        (SELECT round(cast(sum(total) as numeric), 2) as "purchases", substring(cast(date_trunc($1, date) as varchar), 1, $2) as "date"
+        from purchases where source ='Shopify' and date_trunc('day', date) >= $3
+        and date_trunc('day', date) <= $4
+        group by substring(cast(date_trunc($1, date) as varchar), 1, $2)) as 
+        shopify on substring(cast(date_trunc($1, pur.date) as varchar), 1, $2)=shopify.date
 
-    GROUP BY pur.source, substring(cast(date_trunc($1, pur.date) as varchar), 1, $2), woo.purchases, shopify.purchases
-    ORDER by substring(cast(date_trunc($1, pur.date) as varchar), 1, $2) ASC
+        GROUP BY pur.source, substring(cast(date_trunc($1, pur.date) as varchar), 1, $2), woo.purchases, shopify.purchases
+        ORDER by substring(cast(date_trunc($1, pur.date) as varchar), 1, $2) ASC
     ;
 
     `
@@ -69,15 +68,13 @@ router.get('/:filter/:startDate/:endDate', async (req, res, next) => {
     
     // Gets cost of goods solds, cost + discounts, and revenue of purchases
     const newQuery = `
-
-    SELECT substring(cast(date_trunc($1, pur.date) as varchar), 1, $2) as "date", sum(pur.total) as "revenue", sum(InnerCost.cost) + sum(pur.discount) as "discount", sum(InnerCost.cost) as "cost"
-    FROM purchases pur
-    full outer join
-    (select pur.id as "purchase", sum(v.cost) as "cost", pur.total from variants v join purchase_items pi on v.id=pi.variant join purchases pur on pur.id=pi.purchase group by pur.id) as InnerCost on pur.id=InnerCost.purchase
-    where substring(cast(date_trunc('day', date) as varchar), 1, 10) >= $3 and substring(cast(date_trunc('day', date) as varchar), 1, 10) <= $4
-    GROUP BY substring(cast(date_trunc($1, pur.date) as varchar), 1, $2)
-    ORDER by substring(cast(date_trunc($1, pur.date) as varchar), 1, $2) ASC
-
+      SELECT substring(cast(date_trunc($1, pur.date) as varchar), 1, $2) as "date", sum(pur.total) as "revenue", sum(InnerCost.cost) + sum(pur.discount) as "discount", sum(InnerCost.cost) as "cost"
+      FROM purchases pur
+      full outer join
+      (select pur.id as "purchase", sum(v.cost) as "cost", pur.total from variants v join purchase_items pi on v.id=pi.variant join purchases pur on pur.id=pi.purchase group by pur.id) as InnerCost on pur.id=InnerCost.purchase
+      where substring(cast(date_trunc('day', date) as varchar), 1, 10) >= $3 and substring(cast(date_trunc('day', date) as varchar), 1, 10) <= $4
+      GROUP BY substring(cast(date_trunc($1, pur.date) as varchar), 1, $2)
+      ORDER by substring(cast(date_trunc($1, pur.date) as varchar), 1, $2) ASC
     ;
     `
     // Gets the 50 top selling products
@@ -90,41 +87,55 @@ router.get('/:filter/:startDate/:endDate', async (req, res, next) => {
       LIMIT 50;
     `;
 
+    // Gets all low products
     const lowProductQuery = `
-    SELECT p.id, p.shopify_id, p.title, ven.id as "vendor_id", ven.name as "vendor", 
-    round(cast(sum(InnerPurchase.quantity) as numeric) / cast(least(date_part('day',current_date::date) - date_part('day',p.date_added::date), 30) as numeric), 2) as "salesPerDay", sum(distinct InnerJoin.inner_quantity) as "quantity", 
-    sum(distinct InnerJoin.variants) as "variants",
-    case when (sum(InnerPurchase.quantity) / cast(least(date_part('day',current_date::date) - date_part('day',p.date_added::date), 30) as numeric)) * 10 > sum(distinct InnerJoin.inner_quantity) then 'Low'
-    when (sum(InnerPurchase.quantity) / cast(least(date_part('day',current_date::date) - date_part('day',p.date_added::date), 30) as numeric)) * 10 * 2.5 > sum(distinct InnerJoin.inner_quantity) then 'Medium' 
-    else 'High' end as "stockLevel"
-    FROM products p JOIN variants v on v.product=p.id full outer JOIN vendors ven on ven.id=p.vendor
-    FULL OUTER JOIN
-    (SELECT pitems.quantity, pitems.variant from purchases b join purchase_items pitems on pitems.purchase=b.id WHERE date > current_timestamp - interval '360 days') as InnerPurchase on v.id = InnerPurchase.variant
-    JOIN
-    (SELECT product, count(id) as "variants", sum(quantity) as "inner_quantity" from variants group by product) as InnerJoin on p.id = InnerJoin.product
-    
-    GROUP BY p.id, ven.id
-    HAVING (sum(InnerPurchase.quantity) / cast(least(date_part('day',current_date::date) - date_part('day',p.date_added::date), 30) as numeric)) * 10 > sum(InnerJoin.inner_quantity)
-    ORDER BY quantity desc
+      SELECT p.id, p.shopify_id, p.title, ven.id as "vendor_id", ven.name as "vendor", count(inner_p.variant) as "variants",
+      coalesce(sum(inner_p.quantity), 0) as "quantity",
+      sum(inner_p.is_low::numeric) as "low_variants",
+      case when   ((sum(inner_p.is_low::numeric)+.0001) /  (count(inner_p.variant)+.0001))  >= .5 then 'Low'
+      when ((sum(inner_p.is_low::numeric)+.0001) /  (count(inner_p.variant)+.0001))  <.5 and ((sum(inner_p.is_low::numeric)+.0001) /  (count(inner_p.variant)+.0001))  > .0001 then 'Medium'
+      else 'High' end as "stockLevel"
+      FROM products p left outer JOIN vendors ven on ven.id=p.vendor
+      FULL OUTER JOIN
+      (
+        select p1.id as "product", p1.title, p1.vendor, v.id as "variant",
+        coalesce(sum(distinct v.quantity), 0) as "quantity",
+        round(coalesce(sum(InnerPurchase.quantity), 0)::numeric / 30, 2) as "salesPerDay", 
+        case when round(coalesce(sum(InnerPurchase.quantity), 0)::numeric / 30, 2)* 10 >= coalesce(sum(distinct v.quantity)::numeric, 0) then 1
+        when coalesce(sum(v.quantity), 0) = 0 then 1
+        else 0 end as is_low  
+      from products p1
+      join variants v on v.product=p1.id 
+      full outer join
+      (SELECT pitems.quantity, pitems.variant from purchases b join purchase_items pitems on pitems.purchase=b.id WHERE date > current_timestamp - interval '30 days') as InnerPurchase on v.id = InnerPurchase.variant
+      group by p1.id, v.id
+      order by "salesPerDay" asc
+      ) as inner_p on inner_p.product=p.id
+      where p.id!='-999'
+      GROUP BY p.id, ven.id
+      HAVING ((sum(inner_p.is_low::numeric)+.0001) /  (count(inner_p.variant)+.0001))  >= .5
     ;
     `
-  
-
+    // Gets the market value of all products in inventory
     const valueQuery = `
-        SELECT sum(quantity * price) as "value"
-        FROM variants
+      SELECT sum(quantity * price) as "value"
+      FROM variants
     ;
     `
-
-
+    
     if (req.user) {
-        const result = await db.query(query, values)
-        const newResult = await db.query(newQuery, values)
-        const newestResult = await db.query(newestQuery, [values[2], values[3]])
-        const valueResult = await db.query(valueQuery)
-        const lowProductResult = await db.query(lowProductQuery)
-        // console.log(lowProductResult)
-        res.json({salesData: result.rows, cogsData: newResult.rows, topSellers: newestResult.rows, inventoryValue: valueResult.rows[0].value, lowProducts: lowProductResult.rows})
+        try {
+            const result = await db.query(query, values)
+            const newResult = await db.query(newQuery, values)
+            const newestResult = await db.query(newestQuery, [values[2], values[3]])
+            const valueResult = await db.query(valueQuery)
+            const lowProductResult = await db.query(lowProductQuery)
+            res.json({salesData: result.rows, cogsData: newResult.rows, topSellers: newestResult.rows, inventoryValue: valueResult.rows[0].value, lowProducts: lowProductResult.rows})
+        } catch {
+            console.log("Error: GET /purchases/:filter/:startDate/:endDate")
+            res.send("Error")
+        }
+    
     } else {
         res.send("Not Authenticated")
     }

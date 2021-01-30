@@ -6,6 +6,7 @@ import OutsideAlerter from "../components/OutsideAlerter"
 import * as router from "./vendorAPI"
 
 export default function MyCalendar(props) {
+
     const [eventTitle, setEventTitle] = useState("")
     const [eventDescription, setEventDescription] = useState("")
     const [vendor, setVendor] = useState("Choose Vendor:")
@@ -45,9 +46,11 @@ export default function MyCalendar(props) {
 
     function getData() {
         router.loadSales().then(data => {
-            if (data) {
+            if (data !== "Error") {
                 setData(data)
-            }         
+            } else {
+                alert("Error getting sales data. Please try again or contact Step.")
+            }
         })
     }
 
@@ -177,7 +180,6 @@ export default function MyCalendar(props) {
             startAccessor="start"
             endAccessor="end"
             style={calendarStyle}
-            // onSelectEvent={}
             tooltipAccessor="title"
             onSelectEvent={(e) => showEvent(e)}
             popup={true}

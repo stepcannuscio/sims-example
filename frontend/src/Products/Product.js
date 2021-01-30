@@ -3,6 +3,7 @@ import Layout from "../components/Layout"
 import Table from "../components/Table"
 import DownloadBtn from "../components/DownloadBtn"
 import * as router from "./productAPI"
+import * as helpers from "../helpers"
 
 export default function Product(props) {
 
@@ -57,33 +58,34 @@ export default function Product(props) {
         sortDescFirst: true
       },
       {
+        Header: 'Low Variants',
+        accessor: 'low_variants',
+        sortDescFirst: true
+      },
+      {
         Header: 'Quantity',
         accessor: 'quantity',
         sortDescFirst: true
       },
       {
-        Header: 'Purchases',
-        accessor: 'purchases',
-        sortDescFirst: true
-      },
-      {
         Header: 'Stock Level',
         accessor: 'stockLevel',
-        disableSortBy: true
+        sortDescFirst: true,
+        sortType: helpers.sortStockLevel
       },
     ],
     []
   )
 
-  // console.log(products)
-  
   function getData(reload) {
     setLoading(true)
     if (props.location.state) {
       if (reload) {
         router.loadLowProducts().then(data => {
-          if (data) {
+          if (data !== "Error") {
               setProducts(data)
+          } else {
+            alert("Error getting data. Please try again.")
           }
           setLoading(false) 
         })
@@ -93,9 +95,11 @@ export default function Product(props) {
       }
     } else {
       router.loadProducts().then(data => {
-        if (data) {
+        if (data !== "Error") {
           setProducts(data)
-        }
+        } else {
+          alert("Error getting data. Please try again or contact Step.")
+        } 
         setLoading(false) 
       })
     }  
@@ -109,7 +113,6 @@ export default function Product(props) {
     if (isLoading) {
       return <div className="loader"></div>;
     }
-
 
   return (
     <Layout user={props.user}>

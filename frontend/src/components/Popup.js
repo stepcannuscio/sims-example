@@ -2,7 +2,7 @@
 import ProductPopup from "../Products/ProductPopup"
 import VendorPopup from "../Vendors/VendorPopup"
 import OrderPopup from "../Orders/OrderPopup"
-import OutsideAlerter from "./OutsideAlerter"
+// import OutsideAlerter from "./OutsideAlerter"
 
 export default function Popup(props) {
     
@@ -21,24 +21,24 @@ export default function Popup(props) {
             {props.type === "products" 
             ?
 
-            <OutsideAlerter hide={props.toggle}>
+            // <OutsideAlerter hide={props.toggle}>
                 <ProductPopup values={values} toggle={props.toggle}/>
-            </OutsideAlerter>
+            // </OutsideAlerter>
 
             :
 
             props.type === "vendor"
             ?
 
-            <OutsideAlerter hide={props.toggle}>
+            // <OutsideAlerter hide={props.toggle}>
                 <VendorPopup data={props.data} values={values} toggle={props.toggle} user={props.user}/>
-            </OutsideAlerter>
+            // </OutsideAlerter>
 
             :
 
-            <OutsideAlerter hide={props.toggle}>
+            // <OutsideAlerter hide={props.toggle}>
                 <OrderPopup values={values} toggle={props.toggle}/>
-            </OutsideAlerter>
+            // </OutsideAlerter>
                 
               
     }    

@@ -15,7 +15,6 @@ export default function Vendor(props) {
   const [email, setEmail] = useState("")
   const [phone, setPhone] = useState("")
   const [website, setWebsite] = useState("")
-  const [commMethod, setCommMethod] = useState("")
   const [commMethods, setCommMethods] = useState([])
   const [orderMinimum, setOrderMinimum] = useState("")
   const [deals, setDeals] = useState("")
@@ -68,6 +67,16 @@ export default function Vendor(props) {
         show: false
       },
       {
+        Header: 'Order Minimum',
+        accessor: 'order_minimum',
+        show: false
+      },
+      {
+        Header: 'Deals',
+        accessor: 'deals',
+        show: false
+      },
+      {
         Header: 'Email',
         accessor: 'email',
         show: false
@@ -87,7 +96,6 @@ export default function Vendor(props) {
         accessor: 'products',
         sortDescFirst: true
       },
-
       {
         Header: 'Low Products',
         accessor: 'low_products',
@@ -101,8 +109,10 @@ export default function Vendor(props) {
   function getData() {    
     setLoading(true)
     router.loadVendors().then(data => {
-      if (data) {
+      if (data !== "Error") {
         setData(data)
+      } else {
+        alert("Error getting vendors. Please try again or contact Step.")
       }     
     })
     setLoading(false)     
@@ -130,9 +140,6 @@ export default function Vendor(props) {
       case "vendor-phone":
           setPhone(e.target.value)
           break
-      // case "comm_method":
-      //     setCommMethod(e.target.value)
-      //     break
       case "order_minimum":
         setOrderMinimum(e.target.value)
         break
@@ -152,7 +159,6 @@ export default function Vendor(props) {
           email: email,
           phone: phone,
           website: website,
-          // commMethod: commMethod,
           orderMinimum: orderMinimum,
           deals: deals
       }
@@ -193,7 +199,6 @@ export default function Vendor(props) {
   }
 
   function resetData() {
-
     setVendorName("")
     setContactName("")
     setEmail("")
@@ -202,7 +207,6 @@ export default function Vendor(props) {
     setCommMethods([])
     setOrderMinimum("")
     setDeals("")
-
   }
 
   function commMethodSelected(e) {
@@ -220,7 +224,7 @@ export default function Vendor(props) {
       }         
     }
   }
-    
+
   if (isLoading) {
     return <div className="loader"></div>;
   }

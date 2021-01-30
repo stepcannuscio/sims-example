@@ -2,7 +2,8 @@ import React, {useState, useEffect} from "react"
 import Table from "../components/Table"
 import Layout from "../components/Layout"
 import DownloadBtn from "../components/DownloadBtn"
-import * as router from "./orderAPI";
+import * as router from "./orderAPI"
+import * as helpers from "../helpers"
 
 export default function Order(props) {
   
@@ -39,7 +40,7 @@ export default function Order(props) {
         Header: 'Total',
         accessor: 'total',
         sortDescFirst: true,
-        sortType: sortMoney
+        sortType: helpers.sortMoney
       },
       {
         Header: 'Subtotal',
@@ -55,19 +56,19 @@ export default function Order(props) {
         Header: 'Submitted',
         accessor: 'submitted_date',
         sortDescFirst: true,
-        sortType: sortDates
+        sortType: helpers.sortDates
       },
       {
         Header: 'Fulfilled',
         accessor: 'fulfilled_date',
         sortDescFirst: true,
-        sortType: sortDates
+        sortType: helpers.sortDates
       },
       {
         Header: 'Completed',
         accessor: 'completed_date',
         sortDescFirst: true,
-        sortType: sortDates
+        sortType: helpers.sortDates
       },
       {
         Header: 'Status',
@@ -81,76 +82,13 @@ export default function Order(props) {
     []
   )
 
-  function sortMoney(rowA, rowB) {
-
-    var aValues = "$0"
-    var bValues = "$0"
-    if (rowA.values.total) {
-      aValues = rowA.values.total
-    }
-    if (rowB.values.total) {
-      bValues = rowB.values.total
-    }
-
-      if (Number(aValues.replace(/(^\$|,)/g,'')) > Number(bValues.replace(/(^\$|,)/g,''))) {
-        return 1
-    } else {
-        return -1
-    }
-
-  }
-
-  function sortDates(rowA, rowB, column) {
-
-    var a = ""
-    var b = ""
-
-    if (column === "submitted_date") {
-      a = rowA.values.submitted_date
-      b = rowB.values.submitted_date
-    } else if (column === "fulfilled_date") {
-      a = rowA.values.fulfilled_date
-      b = rowB.values.fulfilled_date
-    } else if (column === "completed_date") {
-      a = rowA.values.completed_date
-      b = rowB.values.completed_date
-    }
-
-    var dateA = ""
-    var dateB = ""
-    var timeA = ""
-    var timeB = ""
-    var amPMA = ""
-    var amPMB = ""
-
-    if (a) {
-      a = a.split(' ')
-      dateA = a[0].split('/')
-      timeA = a[1].split(':')
-      amPMA = a[2]
-    } else {
-      return 0
-    }
-
-    if (b) {
-      b = b.split(' ')
-      dateB = b[0].split('/')
-      timeB = b[1].split(':')
-      amPMB = b[2]
-    } else {
-      return 0
-    }
-
-    return dateA[2] - dateB[2] || dateA[0] - dateB[0] || dateA[1] - dateB[1] || amPMA > amPMB || 
-            timeA[0][0] - timeB[0][0] || timeA[0][1] - timeB[0][1] || timeA[1][0] - timeB[1][0] || timeA[1][1] - timeB[1][1] || true
-  }
-
-    
   function getData() {
     setLoading(true)
     router.loadOrders().then(data => {
-      if (data) {
+      if (data !== "Error") {
         setData(data)
+      } else {
+        alert("Error getting data. Please try again or contact Step.")
       }    
       setLoading(false)   
     }) 

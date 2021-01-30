@@ -15,8 +15,6 @@ export default function ProductPopup(props) {
     const [variant, setVariant] = useState("default")
 
     const [originalPurchases, setOriginalPurchases] = useState([])
-    // const [wooPurchases, setWooPurchases] = useState([])
-    // const [shopifyPurchases, setShopifyPurchases] = useState([])
     const [dateFilter, setDateFilter] = useState('month')
     const [startDate, setStartData] = useState("")
     const [endDate, setEndDate] = useState("")
@@ -26,11 +24,6 @@ export default function ProductPopup(props) {
     const [isLoading, setLoading] = useState(false)
     const [idsToUpdate, setIdsToUpdate] = useState([])
     const [dataToUpdate, setDataToUpdate] = useState([])
-
-    // console.log(wooPurchases)
-    // console.log(shopifyPurchases)
-    // console.log(purchases)
-    // console.log(dateFilter)
 
     const history = useHistory()
 
@@ -51,75 +44,31 @@ export default function ProductPopup(props) {
         fontSize: "30px"
     }
 
-    // const filterStyle = {
-    //     padding: "10px 30px",
-    //     borderRadius: "5px",
-    //     border: "none",
-    //     backgroundColor: "rgb(45,142,255)",
-    //     color: "white",
-    //     fontSize: "16px",
-    //     outline: "none",
-    //     display: "inline-block",
-    //     margin: "10px"
-    //   }
-
     function getData(filter="month", start="", end="", variantId=null) {
-        // console.log('sdffsd')
-        // console.log(variantId)
-        // console.log(filter)
-       
-        if (variantId !== "default") {
-            setLoading(true)
-            // console.log(filter)
-            router.loadProduct(props.values.id, filter, start, end, variantId).then(data => {
-                if (data) {
-                    // console.log(data)
-                    if (data.productData) {
-                        setData(data.productData)
-                        const newData = data.productData.map(a => ({...a})) // make copy to compare dataToUpdate with to look for changes
-                        // console.log(newData)
-                        setOriginalData(newData)
-                        const newPurchases = data.purchaseData.map(a => ({...a}))
-                        setOriginalPurchases(newPurchases)
-                    }
-                    
-                    setPurchases(data.purchaseData)
-                    // console.log(data.purchaseData)
-                    // setShopifyPurchases(data.shopifyPurchaseData)
-                    // setWooPurchases(data.wooPuchaseData)
-                    
-        
-                      
+
+        setLoading(true)
+        router.loadProduct(props.values.id, filter, start, end, variantId).then(data => {
+            if (data !== "Error") {
+                if (data.productData) {
+                    setData(data.productData)
+                    const newData = data.productData.map(a => ({...a})) // make copy to compare dataToUpdate with to look for changes
+                    setOriginalData(newData)
+                    const newPurchases = data.purchaseData.map(a => ({...a}))
+                    setOriginalPurchases(newPurchases)
                 }
-                setLoading(false)    
-            });
-        }
-    
+                setPurchases(data.purchaseData)                
+            } else {
+                alert("Error getting data. Please try again or contact Step.")
+            }
+            setLoading(false)    
+        });
       }
 
     function editBtnClicked(e) {
         if (btnText === "Edit") {
             setBtnText("Save")
         } else {
-            // Save data
             saveData()
-            // const updateDict = {}
-            // dataToUpdate.forEach(item => {
-            //     updateDict[item.id] = item.quantity
-            // })
-         
-            // if (dataToUpdate.length > 0) {
-            //     router.updateProduct(props.values.id, updateDict).then(data => {
-            //         if (data === "Success") {
-            //             setBtnText("Edit")
-            //             getData()
-            //         } else {
-            //             setBtnText("Edit")
-            //         }
-            //     })
-            // } else {
-            //     setBtnText("Edit")
-            // } 
         }
         setIsEditing(!isEditing)
         setEditColor(editColor === "#26B1FF" ? "#76c32d" : "#26B1FF")
@@ -129,16 +78,9 @@ export default function ProductPopup(props) {
 
         const updatedData = []
 
-        // console.log(data)
-        // console.log(originalData)
-        // console.log(dataToUpdate)
-
         dataToUpdate.forEach(newItem => {
             originalData.forEach(ogItem => {
                 if (ogItem.variant_id === newItem.variant_id) {
-
-                    // console.log(ogItem)
-                    // console.log(newItem)
                     // Same item
                     if ((newItem.quantity !== ogItem.quantity && newItem.quantity) || 
                         (newItem.cost !== ogItem.cost && newItem.cost ))
@@ -153,55 +95,41 @@ export default function ProductPopup(props) {
             })
         })
 
-        // console.log(updatedData)
-        router.updateProduct(updatedData, props.values.id).then(data => {
-            if (data === "Success") {
-                setBtnText("Edit")
-                getData("products")
-                setDataToUpdate([])
-                setIdsToUpdate([])
-            } else {
-                alert("Failed to save product. Please try again.")
-                setBtnText("Edit")
-            }
-        })
+        if (updatedData.length > 0) {
+            router.updateProduct(updatedData, props.values.id).then(data => {
+                if (data === "Success") {
+                    setBtnText("Edit")
+                    getData()
+                    setDataToUpdate([])
+                    setIdsToUpdate([])
+                } else {
+                    alert("Failed to save product. Please try again.")
+                    setBtnText("Edit")
+                }
+            })
+        } else {
+            setBtnText("Edit")
+        }
     }
-
-    // function editInput(e) {
-    //     if (e.target.value !== e.target.placeholder) {
-    //         // Quantity value has changed for this variant
-    //         const newData = {
-    //             "id": e.target.id,
-    //             "quantity": e.target.value
-    //         }
-    //         setDataToUpdate(oldArray => [...oldArray, newData])
-    //     }
-    // }
 
     function editInput(data, value, type) {
         data[type] = value // update the value to be what was entered in the inputs
-
-        if (value !== "0" && value !== 0 && value !== "") {
-            
-
-            if (idsToUpdate.includes(data.variant_id)) {
-                // Item is in array so let's update it
-                dataToUpdate.forEach((item, index) => {
-                    
-                    if (item.variant_id === data.variant_id) {
-                        var array = [...dataToUpdate]; // make a separate copy of the array
-                        if (index !== -1) {
-                            array.splice(index, 1);
-                            setDataToUpdate(array);
-                        } 
-                            setDataToUpdate(oldArray => [...oldArray, data])   
-                    }  
-                })
-            } else {
-                    setIdsToUpdate(oldArray => [...oldArray, data.variant_id])
-                    setDataToUpdate(oldArray => [...oldArray, data])
-            }
-        }                 
+        if (idsToUpdate.includes(data.variant_id)) {
+            // Item is in array so let's update it
+            dataToUpdate.forEach((item, index) => {
+                if (item.variant_id === data.variant_id) {
+                    var array = [...dataToUpdate]; // make a separate copy of the array
+                    if (index !== -1) {
+                        array.splice(index, 1);
+                        setDataToUpdate(array);
+                    } 
+                        setDataToUpdate(oldArray => [...oldArray, data])   
+                }  
+            })
+        } else {
+            setIdsToUpdate(oldArray => [...oldArray, data.variant_id])
+            setDataToUpdate(oldArray => [...oldArray, data])
+        }             
     }
 
 
@@ -234,17 +162,6 @@ export default function ProductPopup(props) {
             {originalPurchases.length > 0 && !isPurchasesHidden
             ? 
             <div>
-                {/* <select style={filterStyle} value={variant} onChange={(e) => {
-                    setVariant(e.target.value)
-                    getData(dateFilter, startDate, endDate, e.target.value)
-                }}>
-                    <option value="default">Choose Variant:</option>
-                    {data.map(item => {
-                        return (
-                            <option value={item.variant_id}>{item.variant}</option>
-                        )
-                    })}
-                </select> */}
                 <DateFilter dateFilter={dateFilter} startDate={startDate} endDate={endDate} variant={variant} variantData={data} reload={(filter, start, end, id) => {
                     setDateFilter(filter)
                     setStartData(start)
@@ -260,31 +177,22 @@ export default function ProductPopup(props) {
             <p></p>
             :
             <p style={{textAlign: "center"}}>No Purchases Yet!</p>
-            
-            }
-            
-            
+            }     
+
             <table style={{textAlign: "center"}}>
                 <thead >
                     <tr>
-
                         <th className="table-header">Variant</th>
                         <th className="table-header">Shopify ID</th>            
-                        <th className="table-header">Purchases</th>
+                        <th className="table-header">Purchases/day</th>
                         <th className="table-header">Quantity</th>
                         <th className="table-header">Cost/unit</th>
                         <th className="table-header">Stock Level</th>
-                        
                         <th className="table-header">Recent Order</th>
-
-                        {/* <th className="table-header">Variant</th>
-                        <th className="table-header">Price</th>
-                        <th className="table-header">Quantity</th> */}
                     </tr>
                 </thead>
                 <tbody>
-                {data.map((item, index) => {
-                  
+                {data.map((item, index) => {   
                     const bgColor = item.stockLevel === "Low" ? "red" : item.stockLevel === "Medium" ? "#FFD300" : "#4CAF50"
                     return (  
                         isEditing 
@@ -292,7 +200,7 @@ export default function ProductPopup(props) {
                         <tr key={index}>
                             <td className="table-cell">{item.variant}</td>
                             <td className="table-cell">{item.variant_shopify_id}</td>
-                            <td className="table-cell">{item.purchases}</td>
+                            <td className="table-cell">{item.salesPerDay}</td>
                             <td className="table-cell">
                                 <input className="table-cell" type="text" onChange={(e) => editInput(item, e.target.value, "quantity")} placeholder={item.quantity} />
                             </td>
@@ -301,13 +209,12 @@ export default function ProductPopup(props) {
                             </td>
                             <td className="table-cell stock-level" style={{backgroundColor: bgColor}}>{item.stockLevel}</td>                        
                             <td className="table-cell">{item.recentOrder}</td>
-                            
                         </tr>
                         :
                         <tr key={index}>
                           <td className="table-cell">{item.variant}</td>
                             <td className="table-cell">{item.variant_shopify_id}</td>
-                            <td className="table-cell">{item.purchases}</td>
+                            <td className="table-cell">{item.salesPerDay}</td>
                             <td className="table-cell">
                                 {item.quantity}
                             </td>
@@ -317,7 +224,6 @@ export default function ProductPopup(props) {
                             <td className="table-cell stock-level" style={{backgroundColor: bgColor}}>{item.stockLevel}</td>                        
                             <td className="table-cell">{item.recentOrder}</td>
                         </tr>
-                 
                     ) 
                 })}   
                 </tbody>

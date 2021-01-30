@@ -1,6 +1,4 @@
-// import {useState} from "react"
 import {useHistory} from "react-router"
-// import * as router from "./homeAPI"
 
 export default function CallToAction(props) {
 
@@ -10,9 +8,6 @@ export default function CallToAction(props) {
   products page with low product data on click
 
   */
-
-  // const [data, setData]= useState([])
-  // const [productsRunningLow, setProductsRunningLow] = useState(0)
 
   const history = useHistory();
 
@@ -31,33 +26,16 @@ export default function CallToAction(props) {
     fontSize: "12px",
   }
 
-  // function getData() {
-  //   router.loadLowProducts().then(data => {
-  //     if (data) {
-  //       setData(data)
-  //       setProductsRunningLow(data.length)
-  //     }
-      
-  //   })
-  // }
-
-  // useEffect(() => {
-  //   getData()
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   }, []);
-
   return (
-      // <div style={{ width: "50%"}}>
-        <div className="cta" onClick={() => {
-            if (props.type === "products") {
-              history.push("/products", {products: props.data})
-            }
-          }
-          }>
-          <h2 style={headingStyle}>{props.text}</h2>
-          <strong><p style={productsLowNumStyle}>{props.type === "products" ? props.data.length : props.data}</p></strong>
-          <p style={smallText}>{props.type === "products" ? "View Products" : "Value of products in inventory"} </p>
-        </div>
-      // </div>
+    <div className="cta" onClick={() => {
+        if (props.type === "products") {
+          history.push("/products", {products: props.data})
+        }
+      }
+      }>
+      <h2 style={headingStyle}>{props.text}</h2>
+      <strong><p style={productsLowNumStyle}>{props.type === "products" ? props.data.length : props.data}</p></strong>
+      <p style={smallText}>{props.type === "products" ? "View Products" : "Value of products in inventory"} </p>
+    </div>
     )
 }

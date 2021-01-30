@@ -1,12 +1,7 @@
 import { ResponsiveContainer, Legend, LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
+import * as helpers from "../helpers"
 
 export default function SalesChart(props) {
-
-    const formatter = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 0
-    })
 
     const maxShopify = Math.max.apply(Math, props.data.map(function(o) { return o.shopify; }))
     const maxWoo = Math.max.apply(Math, props.data.map(function(o) { return o.woo; }))
@@ -17,9 +12,9 @@ export default function SalesChart(props) {
         if (active) {
             return (
             <div className="custom-tooltip">
-                <strong><p className="label">{payload[0] ? payload[0].payload.date : null}</p></strong>
-                <p className="label" style={{color: "#8884d8" }}>{payload[0] && payload[0].payload.shopify  ? `Shopify: ${formatter.format(payload[0].payload.shopify)}` : null}</p>
-                <p className="label" style={{color: "red" }}>{payload[0] && payload[0].payload.woo ? `Woo: ${formatter.format(payload[0].payload.woo)}` : null}</p>
+                <strong><p className="label">{payload && payload[0] ? payload[0].payload.date : null}</p></strong>
+                <p className="label" style={{color: "#8884d8" }}>{payload && payload[0] && payload[0].payload.shopify  ? `Shopify: ${helpers.formatter.format(payload[0].payload.shopify)}` : null}</p>
+                <p className="label" style={{color: "red" }}>{payload && payload[0] && payload[0].payload.woo ? `Woo: ${helpers.formatter.format(payload[0].payload.woo)}` : null}</p>
             </div>
             );
         }
