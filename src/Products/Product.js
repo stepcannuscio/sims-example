@@ -12,7 +12,8 @@ export default function Product(props) {
 
   const outerStyle = {
     gridArea: "main",
-    backgroundColor: "rgb(246,246,247)"
+    backgroundColor: "rgb(246,246,247)",
+    overflowX: "hidden"
   }
 
   const columns = React.useMemo(
