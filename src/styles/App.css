@@ -50,6 +50,8 @@
 }
 
 .grid-container {
+  height: 100vh;
+  width: 100vw;
   display: grid;
   grid-template-columns: 1fr; /* Side nav is hidden on mobile */
   grid-template-rows: 51px 1fr;
@@ -57,7 +59,7 @@
     "header"
     "main"
     ;
-  height: 100vh;
+
 }
 
 a,
@@ -234,7 +236,7 @@ input:focus {
   color: #1E384D;
   height: 80%;
   overflow: auto; /* let it scroll */
-  z-index: 100;
+  z-index: 8001;
   
 
 }
@@ -423,16 +425,12 @@ input:focus {
   .modal-content {
     left: 3%;
     top: 7%;
+    padding: 10px 20px;
   }
-
   .add-popup {
     left: 5%;
   }
   .cta {
     height: 175px;
-  }
-
-  .inner-style {
-    margin: 20px 0;
   }
 }
