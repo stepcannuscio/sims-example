@@ -27,6 +27,7 @@ export default function Home(props) {
     backgroundColor: "rgb(246,246,247)",
     textAlign: "center",
     flexWrap: "wrap",
+    overflowY: "scroll"
   };
 
   function getData(filter="month", startDate="", endDate="") {

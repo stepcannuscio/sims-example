@@ -20,20 +20,6 @@ export default function Vendor(props) {
   const [deals, setDeals] = useState("")
   const [isCalendarHidden, setCalendarHidden] = useState(true)
 
-  const outerStyle = {
-    gridArea: "main", 
-    backgroundColor: "rgb(246,246,247)"
-  }
-
-  const innerStyle = {
-    backgroundColor: "white",
-    width: "80%", 
-    borderRadius: "5px",
-    margin: "20px auto",
-    padding: "1% 3%",
-    boxShadow: `0 1px 4px rgba(0, 0, 0, 0.2), 0 0 10px rgba(10, 0, 0, 0.1)`,
-  }
-
   const inputStyle = {
     display: "block",
     margin: "20px 0",
@@ -231,14 +217,14 @@ export default function Vendor(props) {
 
   return (
     <Layout user={props.user}>
-      <div style={outerStyle}>
+      <div className="outer-style">
         <div hidden={isCalendarHidden}>
             <Calendar vendorData={data} user={props.user}/>
         </div>
         <div style={{textAlign: "center", margin: "20px 0"}}>
           <button className="btn" onClick={() => setCalendarHidden(!isCalendarHidden)}>{isCalendarHidden ? "Show" : "Hide"} Sales Calendar</button>
         </div>   
-        <div style={innerStyle}>
+        <div className="inner-style">
           <h1>Vendors</h1>
           <DownloadBtn data={data} type="vendors" />
           <button className="circle-btn" style={{margin: "0", left: "80%", bottom: "85px"}} onClick={() => setAddPopupHidden(!isAddPopupHidden)}>+</button>

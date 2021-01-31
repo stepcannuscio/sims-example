@@ -51,7 +51,6 @@
 
 .grid-container {
   height: 100vh;
-  width: 100vw;
   display: grid;
   grid-template-columns: 1fr; /* Side nav is hidden on mobile */
   grid-template-rows: 51px 1fr;
@@ -370,6 +369,12 @@ input:focus {
   justify-content: center;
   align-items: center;
   width: 50%;
+}
+
+.outer-style {
+  grid-area: main;
+  background-color: rgb(246,246,247);
+  overflow-x: hidden;
 }
 
 .inner-style {

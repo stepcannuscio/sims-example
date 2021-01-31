@@ -10,12 +10,6 @@ export default function Product(props) {
   const [products, setProducts] = useState([])
   const [isLoading, setLoading] = useState(false)
 
-  const outerStyle = {
-    gridArea: "main",
-    backgroundColor: "rgb(246,246,247)",
-    overflowX: "hidden"
-  }
-
   const columns = React.useMemo(
     () => [
       {
@@ -107,7 +101,7 @@ export default function Product(props) {
 
   return (
     <Layout user={props.user}>
-      <div style={outerStyle}>
+      <div className="outer-style">
         <div className="inner-style">
           <h1>Products</h1>
           <DownloadBtn data={products} type="products" />

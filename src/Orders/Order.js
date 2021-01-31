@@ -10,12 +10,6 @@ export default function Order(props) {
   const [data, setData] = useState([])
   const [isLoading, setLoading] = useState(true);
 
-  const outerStyle = {
-    gridArea: "main", 
-    backgroundColor: "rgb(246,246,247)",
-    overflowX: "hidden"
-  }
-
   const columns = React.useMemo(
     () => [
       {
@@ -97,7 +91,7 @@ export default function Order(props) {
 
   return (
     <Layout user={props.user}>
-      <div style={outerStyle}>
+      <div className="outer-style">
         <div className="inner-style">
           <h1>Orders</h1>
           <DownloadBtn data={data} type="orders"/>
