@@ -10,15 +10,6 @@ export default function Order(props) {
   const [data, setData] = useState([])
   const [isLoading, setLoading] = useState(true);
 
-  const innerStyle = {
-      backgroundColor: "white",
-      width: "80%", 
-      borderRadius: "5px",
-      margin: "20px auto",
-      padding: "1% 3%",
-      boxShadow: `0 1px 4px rgba(0, 0, 0, 0.2), 0 0 10px rgba(10, 0, 0, 0.1)`,
-    }
-
   const outerStyle = {
     gridArea: "main", 
     backgroundColor: "rgb(246,246,247)"
@@ -106,7 +97,7 @@ export default function Order(props) {
   return (
     <Layout user={props.user}>
       <div style={outerStyle}>
-        <div style={innerStyle}>
+        <div className="inner-style">
           <h1>Orders</h1>
           <DownloadBtn data={data} type="orders"/>
           <Table reloadData={() => getData()} initialSearch="" columns={columns} type="all-orders" data={data} search={true} popupEnabled={true} perPage={10}/>

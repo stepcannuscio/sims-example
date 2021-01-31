@@ -363,6 +363,22 @@ input:focus {
   left: 45%;
 }
 
+.cta-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+}
+
+.inner-style {
+  background-color: white;
+  width: 80%;
+  border-radius: 5px;
+  margin: 20px auto;
+  padding: 1% 3%;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2), 0 0 10px rgba(10, 0, 0, 0.1);
+}
+
 
 
  
@@ -384,6 +400,9 @@ input:focus {
   .add-popup {
     left: 25%
   }
+  .cta-container {
+    width: 65%;
+  }
 }
 
 @media only screen and (max-width: 749px) {
@@ -399,6 +418,7 @@ input:focus {
 
 }
 
+/* Mobile */
 @media only screen and (max-width: 450px) {
   .modal-content {
     left: 3%;
@@ -407,5 +427,12 @@ input:focus {
 
   .add-popup {
     left: 5%;
+  }
+  .cta {
+    height: 175px;
+  }
+
+  .inner-style {
+    margin: 20px 0;
   }
 }

@@ -27,14 +27,8 @@ export default function Home(props) {
     backgroundColor: "rgb(246,246,247)",
     textAlign: "center",
     flexWrap: "wrap",
+    overflowX: "hidden"
   };
-
-  const ctaContainerStyle = {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "50%"
-  }
 
   function getData(filter="month", startDate="", endDate="") {
    
@@ -64,7 +58,7 @@ export default function Home(props) {
   return (
     <Layout user={props.user}>
       <main style={style}>
-        <div style={ctaContainerStyle}>
+        <div className="cta-container">
 
         <CallToAction data={lowProducts} text="Low Products" type="products"/>
         <CallToAction data={helpers.formatter.format(inventoryValue)} text="Inventory Value" type="inventory" />

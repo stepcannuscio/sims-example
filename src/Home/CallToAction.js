@@ -18,8 +18,8 @@ export default function CallToAction(props) {
 
   const productsLowNumStyle = {
     color: props.type === "products" ? "red" : "green",
-    fontSize: "30px",
-    margin: "20px"
+    fontSize: "1.5rem",
+    // margin: "20px"
   }
 
   const smallText = {

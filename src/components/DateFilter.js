@@ -8,7 +8,7 @@ export default function DateFilter(props) {
   const [variant, setVariant] = useState(props.variant || "")
 
   const filterStyle = {
-    padding: "10px 20px",
+    padding: "1% 2%",
     borderRadius: "5px",
     border: "none",
     backgroundColor: "rgb(45,142,255)",
@@ -20,7 +20,7 @@ export default function DateFilter(props) {
   }
 
   const datePickerStyle = {
-    padding: "10px 30px",
+    padding: "1% 2%",
     borderRadius: "5px",
     border: "none",
     backgroundColor: "rgb(45,142,255)",
@@ -29,6 +29,16 @@ export default function DateFilter(props) {
     fontSize: "16px",
     display: "inline-block",
     fontFamily: "inherit"
+  }
+
+  const btnStyle = {
+    padding: "1% 2%",
+    margin: "10px 0",
+    backgroundColor: "rgb(45,142,255)",
+    color: "white",
+    borderRadius: "5px", 
+    border: "none", 
+    fontSize: "16px"
   }
       
   function dateFilterChanged(e) {
@@ -42,7 +52,7 @@ export default function DateFilter(props) {
   }
 
   return (
-    <div style={{width: "100%", margin: "20px", display: "flex", justifyContent: `center`}}>
+    <div style={{width: "100%", margin: "20px", display: "flex", flexWrap: "wrap", justifyContent: `center`}}>
       {props.variantData && props.variantData.length > 1
       ?
       <select style={filterStyle} value={variant} onChange={(e) => {
@@ -72,7 +82,7 @@ export default function DateFilter(props) {
       <input style={datePickerStyle} onChange={e => setEndDate(e.target.value)} type="date" id="end" name="end"
           value={endDate}
           min="2018-01-01" max={new Date().toISOString().slice(0,10)} />    
-      <button className="btn" style={{margin: "10px 0", backgroundColor: "rgb(45,142,255)", color: "white"}}  onClick={filterByDate}>Filter by Date</button>
+      <button style={btnStyle}  onClick={filterByDate}>Filter by Date</button>
       </div>
   ) 
 }

@@ -15,16 +15,6 @@ export default function Product(props) {
     backgroundColor: "rgb(246,246,247)"
   }
 
-  const innerStyle = {
-    backgroundColor: "white",
-    width: "80%", 
-    borderRadius: "5px",
-    margin: "20px auto",
-    padding: "1% 3%",
-    boxShadow:
-  `0 1px 4px rgba(0, 0, 0, 0.2), 0 0 10px rgba(10, 0, 0, 0.1)`,
-  }
-
   const columns = React.useMemo(
     () => [
       {
@@ -117,7 +107,7 @@ export default function Product(props) {
   return (
     <Layout user={props.user}>
       <div style={outerStyle}>
-        <div style={innerStyle}>
+        <div className="inner-style">
           <h1>Products</h1>
           <DownloadBtn data={products} type="products" />
           <Table reloadData={() => getData('reload')} initialSearch="" type="products" columns={columns} data={products} search={true} popupEnabled={true} perPage={10}/>
