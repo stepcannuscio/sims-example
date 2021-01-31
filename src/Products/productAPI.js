@@ -25,7 +25,7 @@ async function loadProduct(id, filter, start, end, variantId) {
 } 
 
 async function updateProduct(updates, id) {
-    return await axios.post(constants.BASE_API_URL + '/api/products/'+id+'/api/update',
+    return await axios.post(constants.BASE_API_URL + '/api/products/'+id+'/update',
         {data: updates},
         {withCredentials: true})
             .then(res => res.data)

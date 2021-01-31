@@ -171,9 +171,9 @@ async function insertProductData(data, type, variants, link, dataUpdated, subDat
     
   data.forEach(item => {
     if (type === "products") {
-        values.push([item.shopify_id, item.title.replace(/'/g, "''"), item.vendor, item.image])
+        values.push([item.shopify_id, item.title, item.vendor, item.image])
     } else if (type === "variants") {
-        values.push([item.shopify_id, item.title.replace(/'/g, "''"), item.price, item.quantity, item.product, item.cost])
+        values.push([item.shopify_id, item.title, item.price, item.quantity, item.product, item.cost])
     }
   })
 

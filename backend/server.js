@@ -55,8 +55,8 @@ app.get('*', (req, res) => {
  });
 
 // Task Scheduler
-cron.schedule('17 13-23 * * *', () => { // adjusted for EST based on UTC (-5) CHANGE FIRST PARAM TO 0
-    console.log('runs at the 10 minutes mark of every hour b/t 9am and 7pm (max business hours)')
+cron.schedule('0 13-23 * * *', () => { // adjusted for EST based on UTC (-5) CHANGE FIRST PARAM TO 0
+    console.log('runs at the start of every hour b/t 9am and 7pm (max business hours)')
     getLastUpdate()
 });
 
