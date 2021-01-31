@@ -24,8 +24,18 @@ async function getLastUpdate() {
     limit 1
   ; 
   `;
-  const result = await db.query(query)
-  const lastUpdate = result.rows[0].date
+
+  try {
+    const result = await db.query(query)
+    const lastUpdate = result.rows[0].date
+    const endpoint = 'products.json'
+    var options = "?published_at_min="+lastUpdate.toISOString()+"&limit=250&fields=id,title,vendor,image,variants&order=id%20asc";
+    var url = 'https://' + shopifyKey + shopifyUrl + endpoint + options;
+    pullShopifyProductData(url, 0, 0, lastUpdate)
+  } catch {
+    console.log("Error pullData/getLastUpdate")
+  }
+
 
   // MAKE SURE YOU HAVE A VENDOR, PRODUCT, VARIANT, AND PURCHASE WITH ID OF -999
 
@@ -37,12 +47,6 @@ async function getLastUpdate() {
   // const lastUpdate = new Date('2018-01-01T00:00:00.264')
   // const lastUpdate = new Date('2020-09-01T00:00:00.264')
 
-  const endpoint = 'products.json'
-  var options = "?published_at_min="+lastUpdate.toISOString()+"&limit=250&fields=id,title,vendor,image,variants&order=id%20asc";
-
-  var url = 'https://' + shopifyKey + shopifyUrl + endpoint + options;
-
-  pullShopifyProductData(url, 0, 0, lastUpdate)
 
 }
 

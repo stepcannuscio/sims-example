@@ -24,9 +24,9 @@ router.get("/", (req, res) => {
     // Gets the user who is currently logged in
 
     if (req.user) {
-        res.json({ user: req.user })
+        res.send({ user: req.user })
     } else {
-        res.json({ user: null })
+        res.send({ user: null })
     }
 })
 
@@ -37,9 +37,9 @@ router.get('/logout', function(req, res){
     req.logout();
 
     if (req.user) {
-        res.json("Failed")
+        res.send("Error")
     } else {
-        res.json("Success")
+        res.send("Success")
     }
     
   });
