@@ -173,6 +173,11 @@ a:hover {
 .table-cell {
   width: 33%;
 }
+
+.fixed-table-cell {
+  cursor: pointer;
+}
+
 .inventory-table table th,td:last-child {
   border-right: 0;
 }
@@ -386,9 +391,10 @@ input:focus {
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2), 0 0 10px rgba(10, 0, 0, 0.1);
 }
 
-
-
- 
+.cta-main-text {
+  font-size: 2rem;
+  margin: 0;
+}
 
 @media only screen and (max-width: 950px) {
   /* Show the sidenav */
@@ -438,4 +444,8 @@ input:focus {
   .cta {
     height: 175px;
   }
+  .cta-main-text {
+    font-size: 1rem;
+  }
+
 }

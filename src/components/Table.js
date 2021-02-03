@@ -246,7 +246,7 @@ export default function Table({columns, initialSearch, data, type, reloadData, s
                         }
                       // Apply the cell props
                       return (
-                      <td {...cell.getCellProps()} onClick={() => popupEnabled ? togglePopup(cell) : null} onChange={() => type === "order" ? update(cell.row) : null}> {/*  */}
+                      <td {...cell.getCellProps()} className="fixed-table-cell" onClick={() => popupEnabled ? togglePopup(cell) : null} onChange={() => type === "order" ? update(cell.row) : null}> {/*  */}
                         <div style={stockStyle}>
                         {(cell.column.id === "completed_date" || cell.column.id === "fulfilled_date" || cell.column.id === "submitted_date") && cell.value === '01/01/1969 04:20AM' ? cell.value="" : ["vendor", "name", "title"].includes(cell.column.id) && cell.value ? helpers.capitalizeFirstLetter(cell.value) : cell.render('Cell')}
                         </div>

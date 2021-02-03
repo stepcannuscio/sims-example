@@ -16,10 +16,8 @@ export default function CallToAction(props) {
     fontSize: "1.5rem"
   }
 
-  const productsLowNumStyle = {
+  const colorStyle = {
     color: props.type === "products" ? "red" : "green",
-    fontSize: "1.5rem",
-    // margin: "20px"
   }
 
   const smallText = {
@@ -34,7 +32,7 @@ export default function CallToAction(props) {
       }
       }>
       <h2 style={headingStyle}>{props.text}</h2>
-      <strong><p style={productsLowNumStyle}>{props.type === "products" ? props.data.length : props.data}</p></strong>
+      <strong><p className="cta-main-text" style={colorStyle}>{props.type === "products" ? props.data.length : props.data}</p></strong>
       <p style={smallText}>{props.type === "products" ? "View Products" : "Value of products in inventory"} </p>
     </div>
     )
