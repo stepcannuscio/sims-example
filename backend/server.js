@@ -2,7 +2,6 @@
 const express = require("express") // for server
 const passport = require("passport") // for authentication
 const cookieSession = require("cookie-session")
-const cron = require('node-cron') // for scheduling tasks
 const path = require('path') // for navigating directory
 
 // Routes
@@ -17,7 +16,6 @@ const vendorRoutes = require('./routes/vendors')
 const db = require("./db/dbConfig") // access to DB
 require('./auth/passportConfig')(passport) // access to authentication middleware
 require("dotenv").config()
-const getLastUpdate = require('./tasks/pullData');
 
 const app = express()
 const port = process.env.PORT || 5000
@@ -53,12 +51,6 @@ app.use('/api/vendors', vendorRoutes)
 app.get('*', (req, res) => {
     res.sendFile(path.join(buildPath, 'index.html'));
  });
-
-// Task Scheduler
-cron.schedule('0 13-23 * * *', () => { // adjusted for EST based on UTC (-5) CHANGE FIRST PARAM TO 0
-    console.log('runs at the start of every hour b/t 9am and 7pm (max business hours)')
-    getLastUpdate()
-});
 
 app.listen(port, () => {
     console.log(`Server is running on port: ${port}`)

@@ -55,22 +55,6 @@ async function saveVendor(vendor, commMethods) {
           .catch(err => console.log(err))   
 } 
 
-async function sendText(contactName, data, to) {
-    return await axios.post(constants.BASE_API_URL + "/api/orders/text",
-        {contactName: contactName, data: data, to: to},
-        {withCredentials: true})
-          .then(res => res.data)
-          .catch(err => console.log(err))   
-} 
-
-async function sendEmail(contactName, data, to) {
-    return await axios.post(constants.BASE_API_URL + "/api/orders/email",
-        {contactName: contactName, data: data, to: to},
-        {withCredentials: true})
-          .then(res => res.data)
-          .catch(err => console.log(err))   
-} 
-
 async function loadOrderProducts(productIds) {
     return await axios.post(constants.BASE_API_URL + "/api/vendors/order/",
         {ids: productIds},
@@ -79,4 +63,4 @@ async function loadOrderProducts(productIds) {
           .catch(err => console.log(err))   
 } 
 
-export {loadSales, saveSale, loadVendors, loadVendor, loadVariants, saveOrder, saveVendor, sendText, sendEmail, loadOrderProducts}
+export {loadSales, saveSale, loadVendors, loadVendor, loadVariants, saveOrder, saveVendor, loadOrderProducts}

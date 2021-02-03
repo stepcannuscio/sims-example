@@ -26,27 +26,27 @@ router.get('/:filter/:startDate/:endDate', async (req, res, next) => {
         dateLength = 4
     }
 
-    // Gets purchases split by source - shopify or woo
+    // Gets purchases split by source - in-store or online
     const query = `
 
-        SELECT distinct woo.purchases as "woo", shopify.purchases as "shopify", substring(cast(date_trunc($1, pur.date) as varchar), 1, $2) as "date"
+        SELECT distinct online.purchases as "online", instore.purchases as "in_store", substring(cast(date_trunc($1, pur.date) as varchar), 1, $2) as "date"
         FROM purchases pur
         join
 
         (SELECT round(cast(sum(total) as numeric), 2) as "purchases", substring(cast(date_trunc($1, date) as varchar), 1, $2) as "date"
-        from purchases where source ='Woo' and date_trunc('day', date) >= $3 
+        from purchases where source ='online' and date_trunc('day', date) >= $3 
         and date_trunc('day', date) <= $4
         group by substring(cast(date_trunc($1, date) as varchar), 1, $2)) as 
-        woo on substring(cast(date_trunc($1, pur.date) as varchar), 1, $2)=woo.date
+        online on substring(cast(date_trunc($1, pur.date) as varchar), 1, $2)=online.date
         join
 
         (SELECT round(cast(sum(total) as numeric), 2) as "purchases", substring(cast(date_trunc($1, date) as varchar), 1, $2) as "date"
-        from purchases where source ='Shopify' and date_trunc('day', date) >= $3
+        from purchases where source ='in-store' and date_trunc('day', date) >= $3
         and date_trunc('day', date) <= $4
         group by substring(cast(date_trunc($1, date) as varchar), 1, $2)) as 
-        shopify on substring(cast(date_trunc($1, pur.date) as varchar), 1, $2)=shopify.date
+        instore on substring(cast(date_trunc($1, pur.date) as varchar), 1, $2)=instore.date
 
-        GROUP BY pur.source, substring(cast(date_trunc($1, pur.date) as varchar), 1, $2), woo.purchases, shopify.purchases
+        GROUP BY pur.source, substring(cast(date_trunc($1, pur.date) as varchar), 1, $2), online.purchases, instore.purchases
         ORDER by substring(cast(date_trunc($1, pur.date) as varchar), 1, $2) ASC
     ;
 
@@ -89,7 +89,7 @@ router.get('/:filter/:startDate/:endDate', async (req, res, next) => {
 
     // Gets all low products
     const lowProductQuery = `
-      SELECT p.id, p.shopify_id, p.title, ven.id as "vendor_id", ven.name as "vendor", count(inner_p.variant) as "variants",
+      SELECT p.id, p.title, ven.id as "vendor_id", ven.name as "vendor", count(inner_p.variant) as "variants",
       coalesce(sum(inner_p.quantity), 0) as "quantity",
       sum(inner_p.is_low::numeric) as "low_variants",
       case when   ((sum(inner_p.is_low::numeric)+.0001) /  (count(inner_p.variant)+.0001))  >= .5 then 'Low'

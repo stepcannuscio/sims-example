@@ -6,10 +6,10 @@
 .btn-1 {
   padding: 10px 35px;
   margin-top: 30px;
-  border: 2px solid #76C32D;
+  border: 2px solid #5DCBF9;
   border-radius: 5px;
   background-color: white;
-  color: #76C32D;
+  color: #5DCBF9;
   transition: all .2s ease-in-out;
   font-size: 16px;
   cursor: pointer;
@@ -20,7 +20,7 @@
   margin-top: 30px;
   border: none;
   border-radius: 5px;
-  background-color: #76C32D;
+  background-color: #5DCBF9;
   color: white;
   transition: all .2s ease-in-out;
   font-size: 16px;
@@ -105,7 +105,7 @@ a:hover {
 
 .loader {
   border: 5px solid #f3f3f3; /* Light grey */
-  border-top: 5px solid #76C32D; 
+  border-top: 5px solid #5DCBF9; 
   border-radius: 50%;
   width: 50px;
   height: 50px;
@@ -198,11 +198,11 @@ select {
 input[type=text], textarea {
   width: 80%;
   border: none;
-  border-bottom: 1px solid #76c32d;
+  border-bottom: 1px solid #5DCBF9;
 }
 
 input[type=text]::placeholder, textarea::placeholder {
-  color: #76c32d;
+  color: #5DCBF9;
 
 }
 
@@ -299,7 +299,7 @@ input:focus {
 }
 
 .filler {
-  background: #76c32d;
+  background: #5DCBF9;
   height: 100%;
   border-radius: inherit;
   transition: width .2s ease-in;

@@ -21,7 +21,7 @@ export default function Login(props) {
     }
 
     const inputStyle = {
-        backgroundColor: "#76C32D",
+        backgroundColor: "#5DCBF9",
         color: "white",
         display: "inline-block",
         margin: "10px auto",

@@ -7,12 +7,7 @@ const pool = new Pool({
   ssl: {
     rejectUnauthorized: false
   }
-  //   user: process.env.DBUSER,
-  //   host: process.env.DBHOST,
-  //   database: process.env.DBNAME,
-  //   password: process.env.DBPASSWORD,
-  //   port: process.env.DBPORT,
-  });
+});
 
 module.exports = {
   // We're deciding how to query when db.query is called in the routes

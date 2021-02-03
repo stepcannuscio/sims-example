@@ -23,11 +23,6 @@ export default function Product(props) {
         sortDescFirst: true
       },
       {
-        Header: 'Shopify ID',
-        accessor: 'shopify_id',
-        show: false
-      },
-      {
         Header: 'Vendor',
         accessor: 'vendor',
         sortDescFirst: true

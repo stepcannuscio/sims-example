@@ -93,7 +93,7 @@ export default function Table({columns, initialSearch, data, type, reloadData, s
               pageIndex: 0, 
               pageSize: perPage,
               hiddenColumns: ["id", "comm_method", "email", "phone", "website", "Vendor_ID", "contact_name",
-                              "subtotal", "discount", "variant_id", "vendor_id", "shopify_id", "order_minimum", "deals"],
+                              "subtotal", "discount", "variant_id", "vendor_id", "order_minimum", "deals"],
               globalFilter: initialSearch
             }
         },
@@ -199,7 +199,7 @@ export default function Table({columns, initialSearch, data, type, reloadData, s
                     {// Render the header
                     column.render('Header')}
                     {/* Add a sort direction indicator */}
-                  <span style={{color: "#76c32d", fontSize: "14px"}}>
+                  <span style={{color: "#5DCBF9", fontSize: "14px"}}>
                     {column.isSorted
                       ? column.isSortedDesc
                         ? ' (high-low)'
@@ -248,7 +248,7 @@ export default function Table({columns, initialSearch, data, type, reloadData, s
                       return (
                       <td {...cell.getCellProps()} onClick={() => popupEnabled ? togglePopup(cell) : null} onChange={() => type === "order" ? update(cell.row) : null}> {/*  */}
                         <div style={stockStyle}>
-                        {(cell.column.id === "completed_date" || cell.column.id === "fulfilled_date" || cell.column.id === "submitted_date") && cell.value === '01/01/1969 04:20AM' ? cell.value="" : ["vendor", "name"].includes(cell.column.id) && cell.value ? helpers.capitalizeFirstLetter(cell.value) : cell.render('Cell')}
+                        {(cell.column.id === "completed_date" || cell.column.id === "fulfilled_date" || cell.column.id === "submitted_date") && cell.value === '01/01/1969 04:20AM' ? cell.value="" : ["vendor", "name", "title"].includes(cell.column.id) && cell.value ? helpers.capitalizeFirstLetter(cell.value) : cell.render('Cell')}
                         </div>
                       </td>
                       )

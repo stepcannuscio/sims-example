@@ -14,7 +14,7 @@ export default function OrderPopup(props) {
     const [orderItemBtnText, setOrderItemBtnText] = useState("Edit Order Item")
     const [isEditingOrder, setEditingOrder] = useState(false)
     const [isEditingOrderItem, setEditingOrderItem] = useState(false)
-    const [editColor, setEditColor] = useState("#76c32d")
+    const [editColor, setEditColor] = useState("#5DCBF9")
     const [idsToUpdate, setIdsToUpdate] = useState([])
     const [dataToUpdate, setDataToUpdate] = useState([])
     const [itemsToDelete, setItemsToDelete] = useState([])
@@ -38,7 +38,7 @@ export default function OrderPopup(props) {
         padding: "10px 20px",
         fontSize: "16px",
         border: "none",
-        borderBottom: "1px solid #76c32d"
+        borderBottom: "1px solid #5DCBF9"
     }
 
 
@@ -83,7 +83,7 @@ export default function OrderPopup(props) {
                 saveOrderItem()
             }
         }
-        setEditColor(editColor === "#26B1FF" ? "#76c32d" : "#26B1FF")  
+        setEditColor(editColor === "#000080" ? "#5DCBF9" : "#000080")  
     }
 
     function saveOrder() {
@@ -270,7 +270,7 @@ export default function OrderPopup(props) {
             <div className="top-content">
                 <span className="close" onClick={() =>  props.toggle()}>&times;    </span>
                 <h2 style={{fontSize: "2rem"}}>Order #{data.length > 0 ? data[0].order_id : "Error loading data"}</h2>
-                <p style={{fontSize: "1.4rem"}}>Vendor: {data.length > 0 ? data[0].name : ""}</p>
+                <p style={{fontSize: "1.4rem"}}>Vendor: {data.length > 0 ? helpers.capitalizeFirstLetter(data[0].name) : ""}</p>
                 <div>
                 {isEditingOrder
                 ? 

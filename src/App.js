@@ -6,7 +6,7 @@ import Home from './Home/Home'
 import Products from './Products/Product';
 import Vendors from "./Vendors/Vendor"
 import Orders from "./Orders/Order"
-import * as helpers from "./Login/loginAPI"
+import * as router from "./Login/loginAPI"
 
 export default function App() {
 
@@ -26,7 +26,7 @@ export default function App() {
     setLoading(true)
 
     // Check with backend to see if there is a user signed in
-    helpers.checkUser().then(data => {
+    router.checkUser().then(data => {
 
       if (data.user) {
 

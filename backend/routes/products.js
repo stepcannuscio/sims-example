@@ -10,7 +10,7 @@ router.get('/', async (req, res, next) => {
 
   query = `
 
-  SELECT p.id, p.shopify_id, p.title, ven.id as "vendor_id", ven.name as "vendor", count(inner_p.variant) as "variants",
+  SELECT p.id, p.title, ven.id as "vendor_id", ven.name as "vendor", count(inner_p.variant) as "variants",
   coalesce(sum(inner_p.quantity), 0) as "quantity",
 
 
@@ -73,7 +73,7 @@ router.get('/low', async (req, res) => {
   // Gets all low products
 
   const query = `
-    SELECT p.id, p.shopify_id, p.title, ven.id as "vendor_id", ven.name as "vendor", count(inner_p.variant) as "variants",
+    SELECT p.id, p.title, ven.id as "vendor_id", ven.name as "vendor", count(inner_p.variant) as "variants",
     coalesce(sum(inner_p.quantity), 0) as "quantity",
     sum(inner_p.is_low::numeric) as "low_variants",
     case when   ((sum(inner_p.is_low::numeric)+.0001) /  (count(inner_p.variant)+.0001))  >= .5 then 'Low'
@@ -137,8 +137,8 @@ router.get('/:id/:filter/:startDate/:endDate/:variant', async (req, res) => {
 
   const query = `
 
-    select p.id, p.image, p.shopify_id, p.title as "title", v.id as "variant_id", v.title as "variant",
-    coalesce(sum(InnerPurchase.quantity), 0) AS "purchases", v.cost as "cost", v.shopify_id as "variant_shopify_id", sum(distinct InnerJoin.inner_quantity) as "quantity", 
+    select p.id, p.image, p.title as "title", v.id as "variant_id", v.title as "variant",
+    coalesce(sum(InnerPurchase.quantity), 0) AS "purchases", v.cost as "cost", sum(distinct InnerJoin.inner_quantity) as "quantity", 
     
     round(coalesce(sum(InnerPurchase.quantity), 0)::numeric / 30, 2) as "salesPerDay", 
     
@@ -174,51 +174,51 @@ router.get('/:id/:filter/:startDate/:endDate/:variant', async (req, res) => {
 `;
 
   const purchaseQuery = `
-    SELECT shopify.purchases as "shopify", woo.purchases as "woo", v.id, shopify.date
+    SELECT instore.purchases as "instore", online.purchases as "online", v.id, instore.date
     FROM products p join variants v on p.id=v.product 
 
     join
 
     (SELECT sum(pi.total) as "purchases", substring(cast(date_trunc($2, pur.date) as varchar), 1, $3) as "date", v.id
     FROM products p join variants v on v.product=p.id join purchase_items pi on pi.variant=v.id join purchases pur on pur.id=pi.purchase
-    WHERE p.id=$1 and pur.source='Shopify' and date_trunc('day', pur.date) >= $4 
+    WHERE p.id=$1 and pur.source='in-store' and date_trunc('day', pur.date) >= $4 
     and date_trunc('day', pur.date) <= $5
-    GROUP BY v.id, substring(cast(date_trunc($2, pur.date) as varchar), 1, $3)) as shopify on v.id = shopify.id 
+    GROUP BY v.id, substring(cast(date_trunc($2, pur.date) as varchar), 1, $3)) as instore on v.id = instore.id 
 
     full outer join
 
     (SELECT sum(pi.total) as "purchases", substring(cast(date_trunc($2, pur.date) as varchar), 1, $3) as "date", v.id
     FROM products p join variants v on v.product=p.id join purchase_items pi on pi.variant=v.id join purchases pur on pur.id=pi.purchase
-    WHERE p.id=$1 and pur.source='Woo' and date_trunc('day', pur.date) >= $4
+    WHERE p.id=$1 and pur.source='online' and date_trunc('day', pur.date) >= $4
     and date_trunc('day', pur.date) <= $5
-    GROUP BY v.id, substring(cast(date_trunc($2, pur.date) as varchar), 1, $3)) as woo on shopify.date = woo.date
+    GROUP BY v.id, substring(cast(date_trunc($2, pur.date) as varchar), 1, $3)) as online on instore.date = online.date
 
-    order by shopify.date asc
+    order by instore.date asc
 
   `
 
   const variantPurchaseQuery = `
 
-    SELECT shopify.purchases as "shopify", woo.purchases as "woo", v.id, shopify.date
+    SELECT instore.purchases as "instore", online.purchases as "online", v.id, instore.date
     FROM products p join variants v on p.id=v.product 
 
     join
 
     (SELECT sum(pi.total) as "purchases", substring(cast(date_trunc($2, pur.date) as varchar), 1, $3) as "date", v.id
     FROM products p join variants v on v.product=p.id join purchase_items pi on pi.variant=v.id join purchases pur on pur.id=pi.purchase
-    WHERE p.id=$1 and v.id=$6 and pur.source='Shopify' and date_trunc('day', pur.date) >= $4 
+    WHERE p.id=$1 and v.id=$6 and pur.source='in-store' and date_trunc('day', pur.date) >= $4 
     and date_trunc('day', pur.date) <= $5
-    GROUP BY v.id, substring(cast(date_trunc($2, pur.date) as varchar), 1, $3)) as shopify on v.id = shopify.id 
+    GROUP BY v.id, substring(cast(date_trunc($2, pur.date) as varchar), 1, $3)) as instore on v.id = instore.id 
 
     full outer join
 
     (SELECT sum(pi.total) as "purchases", substring(cast(date_trunc($2, pur.date) as varchar), 1, $3) as "date", v.id
     FROM products p join variants v on v.product=p.id join purchase_items pi on pi.variant=v.id join purchases pur on pur.id=pi.purchase
-    WHERE p.id=$1 and v.id=$6 and pur.source='Woo' and date_trunc('day', pur.date) >= $4
+    WHERE p.id=$1 and v.id=$6 and pur.source='online' and date_trunc('day', pur.date) >= $4
     and date_trunc('day', pur.date) <= $5
-    GROUP BY v.id, substring(cast(date_trunc($2, pur.date) as varchar), 1, $3)) as woo on shopify.date = woo.date
+    GROUP BY v.id, substring(cast(date_trunc($2, pur.date) as varchar), 1, $3)) as online on instore.date = online.date
 
-    order by shopify.date asc
+    order by instore.date asc
 
   `
 

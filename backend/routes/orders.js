@@ -1,13 +1,9 @@
 const express = require('express')
 const router = express.Router() // allows us to create routes with the express server
 const db = require("../db/dbConfig") // access to DB
-const nodemailer = require("nodemailer") // use to send emails
 var format = require('pg-format') // use to dynamically query DB
 const path = require('path')
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') })
-const accountSid = process.env.TWILIO_ACCOUNT_SID // account SID for twilio
-const authToken = process.env.TWILIO_AUTH_TOKEN // auth token for twilio
-const twilioClient = require('twilio')(accountSid, authToken) // sets up the twilio client to access for sms
 
 router.get('/:id', async (req, res) => {
 
@@ -266,107 +262,4 @@ router.post("/", async (req, res) => {
   }
 })
 
-
-router.post("/text", async (req, res) => {
-
-  // This sends an order text to a vendor
-
-  if (req.user) {
-    /* Example:
-
-    Hey John!
-
-      Hope all is well. Can you please fulfill this order for us?
-
-        - Shake Weight - 10in: 15 units
-
-      Thanks!
-      Burman's Health Shop
-
-    */
-    const message = 
-    `Hey ${req.body.contactName}!\n\nHope all is well. Can you please fulfill this order for us?\n
-    ${req.body.data.map((orderItem, index) => {
-        var item = orderItem.productTitle 
-        if (orderItem.variantTitle) {
-            item += " - " + orderItem.variantTitle
-        }
-        return (index === 0 ? `- ${item}: ${orderItem.quantity} units`: `  - ${item}: ${orderItem.quantity} units`)
-    }).join("\n")}\n\nThanks!\nBurman's Health Shop`
-    twilioClient.messages
-      .create({
-          body: message,
-          from: '+12066274392', // change to new number and put in env variable
-          to: `+1${req.body.to}`
-      })
-      .then(message => res.send("Success"))
-      .catch(error => {
-        console.log("Error sending text /orders/text")
-        res.send("Error")
-      })
-  } else {
-    res.send("Not Authenticated")
-  }
-})
-
-
-router.post("/email", async (req, res) => {
-
-  // This sends an order email to a vendor
-
-  /* Example:
-
-    Hey John!
-
-    Hope all is well. Can you please fulfill this order for us?
-
-      - Shake Weight - 10in: 15 units
-
-    Thanks!
-    Burman's Health Shop
-
-  */
-
-  if (req.user) {
-
-    const message = 
-    `Hey ${req.body.contactName}!\n\nHope all is well. Can you please fulfill this order for us?\n
-    ${req.body.data.map((orderItem, index) => {
-        var item = orderItem.productTitle 
-        if (orderItem.variantTitle) {
-            item += " - " + orderItem.variantTitle
-        }
-        return (index === 0 ? `- ${item}: ${orderItem.quantity} units`: `  - ${item}: ${orderItem.quantity} units`)
-    }).join("\n")}\n\nThanks!\nBurman's Health Shop`
-
-
-    // Creates reusable transporter object using the default SMTP transport
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 465,
-      secure: true, // true for 465, false for other ports
-      auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_PASS,
-      },
-    });
-
-    // Sends mail with defined transport object
-    const info = transporter.sendMail({
-      from: `"Burman's Health Shop" <stepan.cannuscio@gmail.com>`, // HAVE TO CHANGE THIS
-      to: req.body.to,
-      subject: "Burman's Health Shop Order", // Subject line
-      text: message, // plain text body
-    })
-    .then(() => res.send("Success"))
-    .catch(error => {
-      console.log("Error sending email /orders/email")
-      res.send("Error")
-    })
-
-    } else {
-      res.send("Not Authenticated")
-    }
-})
- 
 module.exports = router;

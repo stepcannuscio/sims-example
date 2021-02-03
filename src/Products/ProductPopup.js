@@ -4,12 +4,13 @@ import {useHistory} from "react-router-dom"
 import * as router from "./productAPI"
 import SalesChart from "../components/SalesChart"
 import DateFilter from "../components/DateFilter"
+import * as helpers from "../helpers"
 
 export default function ProductPopup(props) {
 
     const [btnText, setBtnText] = useState("Edit")
     const [isEditing, setIsEditing] = useState(false)
-    const [editColor, setEditColor] = useState("#76c32d")
+    const [editColor, setEditColor] = useState("#26B1FF")
     const [isPurchasesHidden, setPurchasesHidden] = useState(true)
     const [data, setData] = useState([])
     const [variant, setVariant] = useState("default")
@@ -71,7 +72,7 @@ export default function ProductPopup(props) {
             saveData()
         }
         setIsEditing(!isEditing)
-        setEditColor(editColor === "#26B1FF" ? "#76c32d" : "#26B1FF")
+        setEditColor(editColor === "#000080" ? "#26B1FF" : "#000080")
     }
 
     function saveData() {
@@ -146,13 +147,11 @@ export default function ProductPopup(props) {
         <div>
             <div className="top-content">
                 <span className="close" onClick={() => props.toggle()}>&times;    </span>
-                {data[0]  ? <img style={imageStyle} src={data[0].image} alt="product"/> : <p></p>}
                 
-                <h2 style={titleStyle}>{data[0] ? data[0].title : "Default"}</h2>
-                
-                <p>Shopify ID: {data[0] ? data[0].shopify_id : "Default"}</p>
+                <h2 style={titleStyle}>{data[0] ? helpers.capitalizeFirstLetter(data[0].title) : "Default"}</h2>
+    
                 <button onClick={editBtnClicked} className="edit-btn" style={{backgroundColor: editColor}}>{btnText}</button>
-                <button onClick={() => history.push("/vendors", {vendor: props.values.vendor})}className="edit-btn" style={{color: "#76c32d"}}>Order</button>
+                <button onClick={() => history.push("/vendors", {vendor: props.values.vendor})}className="edit-btn" style={{color: "#26B1FF"}}>Order</button>
             </div>
 
         <div hidden={originalPurchases.length <= 0} style={{textAlign: "center", margin: "20px 0"}}>
@@ -182,8 +181,7 @@ export default function ProductPopup(props) {
             <table style={{textAlign: "center"}}>
                 <thead >
                     <tr>
-                        <th className="table-header">Variant</th>
-                        <th className="table-header">Shopify ID</th>            
+                        <th className="table-header">Variant</th>     
                         <th className="table-header">Purchases/day</th>
                         <th className="table-header">Quantity</th>
                         <th className="table-header">Cost/unit</th>
@@ -199,7 +197,6 @@ export default function ProductPopup(props) {
                             ? 
                         <tr key={index}>
                             <td className="table-cell">{item.variant}</td>
-                            <td className="table-cell">{item.variant_shopify_id}</td>
                             <td className="table-cell">{item.salesPerDay}</td>
                             <td className="table-cell">
                                 <input className="table-cell" type="text" onChange={(e) => editInput(item, e.target.value, "quantity")} placeholder={item.quantity} />
@@ -213,7 +210,6 @@ export default function ProductPopup(props) {
                         :
                         <tr key={index}>
                           <td className="table-cell">{item.variant}</td>
-                            <td className="table-cell">{item.variant_shopify_id}</td>
                             <td className="table-cell">{item.salesPerDay}</td>
                             <td className="table-cell">
                                 {item.quantity}

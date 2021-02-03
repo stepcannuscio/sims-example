@@ -169,28 +169,7 @@ export default function VendorPopup(props) {
         })
      
         if (dataToUpdate.length > 0) {
-            if (commMethod === "Text") {
-                router.sendText(props.values.contact_name, dataToUpdate, "4848885912").then(data => { // NEED TO CHANGE
-                    if (data === "Success") {
-                        save(order, orderItems)
-                    } else {
-                        alert("Failed to send text. Please try again.")
-                    }     
-                })
-            }
-            else if (commMethod === "Email") {
-                router.sendEmail(props.values.contact_name, dataToUpdate, "stepan.cannuscio@gmail.com").then(data => { // NEED TO CHANGE
-                    if (data === "Success") {
-                        save(order, orderItems)
-                    } else {
-                        alert("Failed to send email. Please try again.")
-                    }     
-                })
-            } else if (["Website", "Call", "Manual Order"].includes(commMethod)) {
-                save(order, orderItems)
-            } else {
-                alert("No communication method selected! Contact Step for help")
-            }
+            save(order, orderItems)
         }
     }
 
@@ -369,11 +348,9 @@ export default function VendorPopup(props) {
                 <div>
                     <p>Products: {props.values.products}</p>
                     <p>Low Products: {props.values.low_products}</p>
-                    <p>Deals: {props.values.deals}</p>
-                    <p>Order Minimum: {props.values.order_minimum}</p>
                     <p>Contact Name: {helpers.capitalizeFirstLetter(props.values.contact_name)}</p>
                     <p>Email: {props.values.email}</p>
-                    <p>Phone: {props.values.phone}</p>
+                    <p>Phone: {props.values.phone.slice(0,3)}-{props.values.phone.slice(3,6)}-{props.values.phone.slice(6,)}</p>
                 </div>
                 {isOrdering ? <button onClick={backBtnClicked} className="edit-btn" style={{backgroundColor: "grey"}}>Back</button> : null }
                 <button hidden={orderState === "Choose Communication"} onClick={(e) => orderBtnClicked(e)} className="edit-btn" style={{backgroundColor: editColor}}>{btnText}</button>
@@ -418,8 +395,8 @@ export default function VendorPopup(props) {
                                 const bgColor = variant.stockLevel === "Low" ? "red" : variant.stockLevel === "Medium" ? "#FFD300" : "#4CAF50"
                                 return (
                                     <tr key={index}>
-                                        <td className="table-cell">{variant.title}</td>
-                                        <td className="table-cell">{variant.variant}</td>
+                                        <td className="table-cell">{helpers.capitalizeFirstLetter(variant.title)}</td>
+                                        <td className="table-cell">{helpers.capitalizeFirstLetter(variant.variant)}</td>
                                         <td className="table-cell">{variant.quantity}</td>
                                         <td className="table-cell">{variant.salesPerDay}</td>
                                         <td className="table-cell stock-level" style={{backgroundColor: bgColor}}>{variant.stockLevel}</td>
@@ -453,8 +430,8 @@ export default function VendorPopup(props) {
                             {dataToUpdate.map((order_item, index) => {
                                 return (
                                     <tr key={index}>
-                                        <td>{order_item.productTitle}</td>
-                                        <td>{order_item.variantTitle}</td>
+                                        <td>{helpers.capitalizeFirstLetter(order_item.productTitle)}</td>
+                                        <td>{helpers.capitalizeFirstLetter(order_item.variantTitle)}</td>
                                         <td>{order_item.quantity}</td>
                                         <td>{helpers.formatter.format(order_item.cost)}</td>
                                         <td>{helpers.formatter.format(order_item.subtotal)}</td>
